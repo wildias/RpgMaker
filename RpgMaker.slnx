@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="RpgMaker.Api/RpgMaker.Api.csproj" />
+  <Project Path="RpgMaker.frontend/rpgmaker.frontend.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+</Solution>
