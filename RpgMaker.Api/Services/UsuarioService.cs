@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RpgMaker.Api.Data;
 using RpgMaker.Api.Model;
+using RpgMaker.Api.Model.Response;
 using RpgMaker.Api.Model.ViewModel;
 
 namespace RpgMaker.Api.Services
@@ -35,6 +36,26 @@ namespace RpgMaker.Api.Services
                 await _context.SaveChangesAsync();
 
                 return novoUsuario;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        internal async Task<ICollection<UsuarioResponse>> BuscarUsuarios()
+        {
+            try
+            {
+                var usuarios = await _context.Usuario
+                    .Select(u => new UsuarioResponse
+                    {
+                        username = u.Username,
+                    })
+                    .ToListAsync();
+
+                return usuarios;
             }
             catch (Exception ex)
             {
