@@ -115,19 +115,55 @@
   transition: border-color 0.3s;
 }
 
+.form-group select {
+  width: 100%;
+  padding: 12px 12px 12px 40px;
+  background-color: #f9fafb;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1f2937;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 20px;
+  padding-right: 40px;
+}
+
+.form-group select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .form-group input::placeholder {
   color: #9ca3af;
 }
 
-.form-group input:focus {
+.form-group input:focus,
+.form-group select:focus {
   outline: none;
   border-color: #3b82f6;
+}
+
+.error-message {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  color: #ef4444;
+  margin-top: 4px;
+  display: block;
 }
 
 .login-button {
   width: 100%;
   padding: 12px;
-  background-color: #3b82f6;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, #1e3a8a 0%, #1e40af 25%, #3b82f6 50%, #1e40af 75%, #1e3a8a 100%);
+  background-size: 200% auto;
   color: white;
   font-family: 'Cinzel', serif;
   font-weight: bold;
@@ -136,11 +172,31 @@
   border-radius: 8px;
   cursor: pointer;
   margin-top: 10px;
-  transition: background-color 0.3s;
+  animation: shineButton 3s linear infinite;
+  box-shadow: 0 4px 15px rgba(30, 64, 175, 0.5);
+  transition: box-shadow 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.button-icon {
+  width: 20px;
+  height: 20px;
+}
+
+@keyframes shineButton {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: 0% center;
+  }
 }
 
 .login-button:hover {
-  background-color: #2563eb;
+  box-shadow: 0 6px 20px rgba(30, 64, 175, 0.7);
 }
 
 .login-links {
@@ -176,6 +232,10 @@
 .login-footer {
   text-align: center;
   margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
 }
 
 .login-footer p {
@@ -183,4 +243,48 @@
   font-size: 11px;
   color: #9ca3af;
   margin: 0;
+}
+
+.login-footer .by-line {
+  font-size: 12px;
+}
+
+.login-footer .wd-text {
+  font-weight: bold;
+  background: linear-gradient(90deg, #B8860B 0%, #FFD700 25%, #FFEC8B 50%, #FFD700 75%, #B8860B 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shine 3s linear infinite;
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+}
+
+.login-footer .site-link {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  padding: 4px 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: auto;
+  max-width: 120px;
+  background: linear-gradient(90deg, #1e3a8a 0%, #1e40af 25%, #3b82f6 50%, #1e40af 75%, #1e3a8a 100%);
+  background-size: 200% auto;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  animation: shineButton 3s linear infinite;
+  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.4);
+  transition: box-shadow 0.3s;
+}
+
+.login-footer .site-link .button-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.login-footer .site-link:hover {
+  box-shadow: 0 3px 12px rgba(30, 64, 175, 0.6);
 }
