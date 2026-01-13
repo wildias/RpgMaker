@@ -10,7 +10,7 @@ namespace RpgMaker.Api.Data
             var optionsBuilder = new DbContextOptionsBuilder<RpgMakerContext>();
 
             var connectionString =
-                "Server=localhost;Database=rpgmaker;User=root;Password=rpgmaker123;";
+                "Server=localhost;Database=rpgmaker;User=root;Password=ab12c3;";
 
             optionsBuilder.UseMySql(
                 connectionString,

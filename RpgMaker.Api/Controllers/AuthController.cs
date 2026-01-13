@@ -78,6 +78,7 @@ namespace RpgMaker.Api.Controllers
                 {
                     new Claim("userId", user.UsuarioId.ToString()),
                     new Claim("userName", user.Username),
+                    new Claim("role", user.Role.ToString()),
                 };
             }
 

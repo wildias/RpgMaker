@@ -1,9 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { authService } from '../services/authService';
 import backgroundImage from '../assets/images/background.jpg';
 import temaSom from '../assets/sons/tema.mp3';
 import '../styles/LoginPage.css';
 import { AuthService } from '../services/AuthService';
 import type { UsuarioResponse } from '../services/AuthService';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
@@ -12,6 +16,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const carregarUsuarios = async () => {
@@ -32,6 +37,39 @@ export default function LoginPage() {
 
     carregarUsuarios();
   }, []);
+      
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/Auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Credenciais inválidas');
+      }
+
+      const data = await response.json();
+      
+      // Salvar o token JWT
+      if (data.token) {
+        authService.saveToken(data.token);
+        navigate('/home');
+      } else {
+        throw new Error('Token não recebido');
+      }
+    } catch (err) {
+      console.error('Erro no login:', err);
+      setError('Usuário ou senha incorretos');
+    } finally {
+      setLoading(false);
 
   useEffect(() => {
     // Criar e configurar o áudio
@@ -149,11 +187,14 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <button type="submit" className="login-button">
-            <svg className="button-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path fillRule="evenodd" d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z" clipRule="evenodd" />
-            </svg>
-            Login
+          {error && (
+            <div className="error-message">
+              {error}
+            </div>
+          )}
+
+          <button type="submit" className="login-button" disabled={loading}>
+            {loading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
 

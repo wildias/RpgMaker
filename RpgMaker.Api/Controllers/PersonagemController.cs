@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RpgMaker.Api.Model.Response;
 using RpgMaker.Api.Model.ViewModel;
 using RpgMaker.Api.Services;
 
@@ -18,7 +19,7 @@ namespace RpgMaker.Api.Controllers
         }
 
         [HttpPost("criar")]
-        public async Task<IActionResult> Login(int usuarioId, [FromBody] PersonagemViewModel personagem)
+        public async Task<IActionResult> CriarPersonagem(int usuarioId, [FromBody] PersonagemViewModel personagem)
         {
             var novoPersonagem = await _personagemService.CriarPersonagem(usuarioId, personagem);
 
@@ -54,6 +55,22 @@ namespace RpgMaker.Api.Controllers
             }
 
             return BadRequest("Erro ao distribuir px");
+        }
+
+        [HttpGet("buscar/{id}")]
+        public async Task<ActionResult<PersonagemResponse>> GetPersonagem(int id)
+        {
+            var personagem = await _personagemService.BuscarPersonagem(id);
+
+            return Ok(personagem);
+        }
+
+        [HttpGet("buscar")]
+        public async Task<ActionResult<IEnumerable<PersonagemResponse>>> GetPersonagens()
+        {
+            var personagens = await _personagemService.BuscarPersonagens();
+
+            return Ok(personagens);
         }
     }
 }

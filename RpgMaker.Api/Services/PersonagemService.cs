@@ -2,6 +2,7 @@
 using RpgMaker.Api.Data;
 using RpgMaker.Api.Model;
 using RpgMaker.Api.Model.Enum;
+using RpgMaker.Api.Model.Response;
 using RpgMaker.Api.Model.ViewModel;
 using RpgMaker.Api.Util;
 
@@ -34,7 +35,8 @@ namespace RpgMaker.Api.Services
                     Imagem = request.Imagem != null ? ImagemUtil.ComprimirImagemBase64ParaBytes(request.Imagem) : null,
                     PX_Atual = 0,
                     PX_Total = 0,
-                    Reino = Enum.Parse<ReinoEnum>(request.Reino)
+                    Reino = Enum.Parse<ReinoEnum>(request.Reino),
+                    Idade = request.Idade
                 };
 
                 _context.Personagem.Add(novoPersonagem);
@@ -107,6 +109,65 @@ namespace RpgMaker.Api.Services
             {
 
                 return false;
+            }
+        }
+
+        internal async Task<PersonagemResponse> BuscarPersonagem(int userId)
+        {
+            try
+            {
+                var personagem = await _context.Personagem
+                    .Where(p => p.Usuario.UsuarioId == userId)
+                    .Select(p => new PersonagemResponse
+                    {
+                        PersonagemId = p.PersonagemId,
+                        Nome = p.Nome,
+                        Aptidao = p.Aptidao,
+                        NumeroIdentificacao = p.NumeroIdentificacao,
+                        Ficha = p.Ficha,
+                        Imagem = p.Imagem != null ? ImagemUtil.DescomprimirImagemParaBase64(p.Imagem) : null,
+                        PX_Atual = p.PX_Atual,
+                        PX_Total = p.PX_Total,
+                        Reino = p.Reino.ToString(),
+                        Idade = p.Idade
+                    })
+                    .FirstOrDefaultAsync();
+
+                return personagem;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        internal async Task<ICollection<PersonagemResponse>> BuscarPersonagens()
+        {
+            try
+            {
+                var personagens = await _context.Personagem
+                    .Select(p => new PersonagemResponse
+                    {
+                        PersonagemId = p.PersonagemId,
+                        Nome = p.Nome,
+                        Aptidao = p.Aptidao,
+                        NumeroIdentificacao = p.NumeroIdentificacao,
+                        Ficha = p.Ficha,
+                        Imagem = p.Imagem != null ? ImagemUtil.DescomprimirImagemParaBase64(p.Imagem) : null,
+                        PX_Atual = p.PX_Atual,
+                        PX_Total = p.PX_Total,
+                        Reino = p.Reino.ToString(),
+                        Idade = p.Idade
+                    })
+                    .ToListAsync();
+
+                return personagens;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
             }
         }
     }

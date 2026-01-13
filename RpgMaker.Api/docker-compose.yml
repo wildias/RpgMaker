@@ -22,7 +22,7 @@ services:
       - "8080:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: "Server=mysql;Port=3306;Database=rpgmaker;User=root;Password=rpgmaker123;"
+      ConnectionStrings__DefaultConnection: "Server=mysql;Port=3306;Database=rpgmaker;User=root;Password=ab12c3;"
     depends_on:
       - mysql
     restart: unless-stopped

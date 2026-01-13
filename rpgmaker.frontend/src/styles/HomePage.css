@@ -1,0 +1,229 @@
+.home-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: auto;
+}
+
+.home-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+.home-content {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 40px 60px;
+}
+
+.home-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.home-title {
+  font-family: 'Cinzel', serif;
+  font-size: 48px;
+  font-weight: bold;
+  background: linear-gradient(90deg, #B8860B 0%, #FFD700 25%, #FFEC8B 50%, #FFD700 75%, #B8860B 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  letter-spacing: 3px;
+  animation: shine 3s linear infinite;
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+}
+
+@keyframes shine {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.home-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-message,
+.error-message {
+  font-family: 'Cinzel', serif;
+  font-size: 24px;
+  color: #FFD700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+  text-align: center;
+}
+
+.error-message {
+  color: #ef4444;
+  text-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+}
+
+/* Player View - Sem personagem */
+.no-personagem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 60px 80px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.no-personagem-title {
+  font-family: 'Cinzel', serif;
+  font-size: 32px;
+  font-weight: bold;
+  background: linear-gradient(90deg, #B8860B 0%, #FFD700 25%, #FFEC8B 50%, #FFD700 75%, #B8860B 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  letter-spacing: 2px;
+  animation: shine 3s linear infinite;
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+  text-align: center;
+}
+
+.criar-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 28px;
+  background-color: #3b82f6;
+  color: white;
+  font-family: 'Cinzel', serif;
+  font-weight: bold;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.criar-button:hover {
+  background-color: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5);
+}
+
+.criar-button:active {
+  transform: translateY(0);
+}
+
+.button-icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* Player View - Com personagem */
+.player-personagem {
+  display: flex;
+  justify-content: center;
+}
+
+/* Mestre View */
+.mestre-personagens {
+  width: 100%;
+  max-width: 1400px;
+}
+
+.section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 32px;
+  font-weight: bold;
+  background: linear-gradient(90deg, #B8860B 0%, #FFD700 25%, #FFEC8B 50%, #FFD700 75%, #B8860B 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 30px 0;
+  letter-spacing: 2px;
+  animation: shine 3s linear infinite;
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+  text-align: center;
+}
+
+.personagens-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px;
+  justify-items: center;
+}
+
+.no-personagens-message {
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  color: #FFD700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+  padding: 40px;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Rodapé */
+.home-footer {
+  text-align: center;
+  margin-top: 40px;
+  padding-top: 20px;
+}
+
+.home-footer p {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .home-content {
+    padding: 20px 30px;
+  }
+
+  .home-title {
+    font-size: 32px;
+  }
+
+  .no-personagem-title,
+  .section-title {
+    font-size: 24px;
+  }
+
+  .no-personagem {
+    padding: 40px 30px;
+  }
+
+  .personagens-grid {
+    grid-template-columns: 1fr;
+  }
+}
