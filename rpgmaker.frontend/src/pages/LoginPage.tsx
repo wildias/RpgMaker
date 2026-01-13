@@ -176,7 +176,18 @@ export default function LoginPage() {
           )}
 
           <button type="submit" className="login-button" disabled={loading}>
-            {loading ? 'Entrando...' : 'Entrar'}
+            {loading ? (
+              'Entrando...'
+            ) : (
+              <>
+                <svg className="button-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M14 2H6C4.9 2 4 2.9 4 4v16c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H6V4h8v16z"/>
+                  <circle cx="13" cy="12" r="1"/>
+                  <path d="M18 9l4 3-4 3v-2h-6v-2h6z"/>
+                </svg>
+                Login
+              </>
+            )}
           </button>
         </form>
 

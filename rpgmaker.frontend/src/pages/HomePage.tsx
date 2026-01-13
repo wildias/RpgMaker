@@ -4,6 +4,7 @@ import { authService } from '../services/authService';
 import { personagemService } from '../services/personagemService';
 import type { PersonagemResponse, JWTClaims } from '../types/types';
 import PersonagemCard from '../components/PersonagemCard';
+import PersonagemModal from '../components/PersonagemModal';
 import backgroundImage from '../assets/images/telaInicial.jpg';
 import '../styles/HomePage.css';
 
@@ -14,6 +15,8 @@ export default function HomePage() {
   const [personagens, setPersonagens] = useState<PersonagemResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<'create' | 'view' | 'edit'>('create');
 
   useEffect(() => {
     const loadData = async () => {
@@ -64,8 +67,20 @@ export default function HomePage() {
   }, []);
 
   const handleCriarPersonagem = () => {
-    // TODO: Implementar navegação para página de criação de personagem
-    console.log('Criar novo personagem');
+    setModalMode('create');
+    setIsModalOpen(true);
+  };
+
+  const handleSavePersonagem = async (data: any) => {
+    try {
+      // TODO: Implementar chamada à API para salvar personagem
+      console.log('Salvando personagem:', data);
+      setIsModalOpen(false);
+      // Recarregar dados após salvar
+      // await loadData();
+    } catch (err) {
+      console.error('Erro ao salvar personagem:', err);
+    }
   };
 
   const handleLogout = () => {
@@ -112,13 +127,30 @@ export default function HomePage() {
         {/* Cabeçalho */}
         <header className="home-header">
           <h1 className="home-title">As Crônicas de Ilfandyr</h1>
-          <button onClick={handleLogout} className="logout-button" title="Sair da Taverna">
+          <button onClick={handleLogout} className="logout-button" title="Sair">
             <svg viewBox="0 0 24 24" fill="currentColor" className="logout-icon">
-              <path d="M3 4h8v2H5v12h6v2H3V4zm16 7h-7V9h7V4h2v16h-2v-5zm-7 2h7v2h-7v-2z" fill="#8B4513"/>
-              <path d="M4 5h6v1H4V5zm0 2h6v1H4V7zm0 2h6v1H4V9zm0 2h6v1H4v-1zm0 2h6v1H4v-1zm0 2h6v1H4v-1zm0 2h6v1H4v-1z" fill="#654321"/>
-              <circle cx="18" cy="12" r="0.8" fill="#FFD700"/>
-              <rect x="11.5" y="3.5" width="0.5" height="17" fill="#3E2723"/>
-              <rect x="20.5" y="3.5" width="0.5" height="17" fill="#3E2723"/>
+              {/* Porta medieval com arco */}
+              <path d="M4 22h16V9c0-2-1-3-3-3h-2V4c0-1-1-2-2-2h-2c-1 0-2 1-2 2v2H7C5 6 4 7 4 9v13z" fill="#654321"/>
+              <path d="M6 8h12v14H6z" fill="#8B4513"/>
+              <rect x="6" y="8" width="6" height="14" fill="#6B4423"/>
+              <rect x="12" y="8" width="6" height="14" fill="#5A3615"/>
+              <circle cx="10" cy="15" r="0.7" fill="#2C1810"/>
+              <circle cx="14" cy="15" r="0.7" fill="#2C1810"/>
+              {/* Dobradiças */}
+              <rect x="11.5" y="9" width="1" height="2" fill="#1a1a1a" rx="0.3"/>
+              <rect x="11.5" y="13" width="1" height="2" fill="#1a1a1a" rx="0.3"/>
+              <rect x="11.5" y="17" width="1" height="2" fill="#1a1a1a" rx="0.3"/>
+              {/* Pregos/detalhes */}
+              <circle cx="8" cy="10" r="0.4" fill="#2C1810"/>
+              <circle cx="8" cy="12" r="0.4" fill="#2C1810"/>
+              <circle cx="8" cy="14" r="0.4" fill="#2C1810"/>
+              <circle cx="8" cy="16" r="0.4" fill="#2C1810"/>
+              <circle cx="8" cy="18" r="0.4" fill="#2C1810"/>
+              <circle cx="16" cy="10" r="0.4" fill="#2C1810"/>
+              <circle cx="16" cy="12" r="0.4" fill="#2C1810"/>
+              <circle cx="16" cy="14" r="0.4" fill="#2C1810"/>
+              <circle cx="16" cy="16" r="0.4" fill="#2C1810"/>
+              <circle cx="16" cy="18" r="0.4" fill="#2C1810"/>
             </svg>
           </button>
         </header>
@@ -163,6 +195,15 @@ export default function HomePage() {
           )}
         </main>
 
+
+      {/* Modal de Personagem */}
+      <PersonagemModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        personagem={personagem}
+        mode={modalMode}
+        onSave={handleSavePersonagem}
+      />
         {/* Rodapé */}
         <footer className="home-footer">
           <p>© 2026 RPG Maker.</p>
