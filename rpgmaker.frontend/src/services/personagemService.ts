@@ -43,6 +43,10 @@ export const personagemService = {
         },
       });
 
+      if (response.status === 404) {
+        return []; // Nenhum personagem encontrado
+      }
+
       if (!response.ok) {
         throw new Error('Erro ao buscar personagens');
       }

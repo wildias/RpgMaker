@@ -32,6 +32,52 @@
 .home-header {
   text-align: center;
   margin-bottom: 40px;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 30px 40px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logout-button {
+  position: absolute;
+  right: 20px;
+  background: linear-gradient(135deg, rgba(101, 67, 33, 0.3) 0%, rgba(139, 69, 19, 0.4) 50%, rgba(101, 67, 33, 0.3) 100%);
+  border: 2px solid rgba(139, 69, 19, 0.6);
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.logout-button:hover {
+  background: linear-gradient(135deg, rgba(139, 69, 19, 0.5) 0%, rgba(160, 82, 45, 0.6) 50%, rgba(139, 69, 19, 0.5) 100%);
+  border-color: rgba(160, 82, 45, 0.8);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(139, 69, 19, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.logout-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.logout-icon {
+  width: 28px;
+  height: 28px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.logout-button:hover .logout-icon {
+  filter: drop-shadow(0 2px 6px rgba(139, 69, 19, 0.8)) brightness(1.1);
 }
 
 .home-title {
@@ -194,7 +240,15 @@
 .home-footer {
   text-align: center;
   margin-top: 40px;
-  padding-top: 20px;
+  padding: 20px 40px;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
 }
 
 .home-footer p {
@@ -202,6 +256,59 @@
   font-size: 11px;
   color: #9ca3af;
   margin: 0;
+}
+
+.home-footer .by-line {
+  font-size: 12px;
+}
+
+.home-footer .wd-text {
+  font-weight: bold;
+  background: linear-gradient(90deg, #B8860B 0%, #FFD700 25%, #FFEC8B 50%, #FFD700 75%, #B8860B 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shine 3s linear infinite;
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+}
+
+.home-footer .site-link {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  padding: 4px 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: auto;
+  max-width: 120px;
+  background: linear-gradient(90deg, #1e3a8a 0%, #1e40af 25%, #3b82f6 50%, #1e40af 75%, #1e3a8a 100%);
+  background-size: 200% auto;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  animation: shineButton 3s linear infinite;
+  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.4);
+  transition: box-shadow 0.3s;
+}
+
+.home-footer .site-link .button-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.home-footer .site-link:hover {
+  box-shadow: 0 3px 12px rgba(30, 64, 175, 0.6);
+}
+
+@keyframes shineButton {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
 }
 
 /* Responsividade */

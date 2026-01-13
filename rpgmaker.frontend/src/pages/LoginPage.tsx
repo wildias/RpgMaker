@@ -1,11 +1,9 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authService } from '../services/authService';
+import { authService, AuthService, type UsuarioResponse } from '../services/authService';
 import backgroundImage from '../assets/images/background.jpg';
-import temaSom from '../assets/sons/tema.mp3';
 import '../styles/LoginPage.css';
-import { AuthService } from '../services/AuthService';
-import type { UsuarioResponse } from '../services/AuthService';
+import temaSom from '../assets/sons/tema.mp3';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
@@ -13,11 +11,12 @@ export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [usuarios, setUsuarios] = useState<UsuarioResponse[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  
   useEffect(() => {
     const carregarUsuarios = async () => {
       try {
@@ -37,39 +36,6 @@ export default function LoginPage() {
 
     carregarUsuarios();
   }, []);
-      
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/Auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Credenciais inválidas');
-      }
-
-      const data = await response.json();
-      
-      // Salvar o token JWT
-      if (data.token) {
-        authService.saveToken(data.token);
-        navigate('/home');
-      } else {
-        throw new Error('Token não recebido');
-      }
-    } catch (err) {
-      console.error('Erro no login:', err);
-      setError('Usuário ou senha incorretos');
-    } finally {
-      setLoading(false);
 
   useEffect(() => {
     // Criar e configurar o áudio
@@ -84,7 +50,7 @@ export default function LoginPage() {
         console.log('Música tocando automaticamente');
       } catch (err) {
         console.log('Autoplay bloqueado. Tentando tocar após interação do usuário...');
-        
+
         // Função para tocar após primeira interação
         const playOnInteraction = async () => {
           try {
@@ -117,19 +83,36 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!username) {
-      alert('Por favor, escolha um usuário');
-      return;
-    }
-    
+    setError('');
+    setLoading(true);
+
     try {
-      // Lógica de login aqui
-      console.log('Login:', { username, password });
-      // await AuthService.login(username, password);
+      const response = await fetch(`${API_BASE_URL}/Auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Credenciais inválidas');
+      }
+
+      const data = await response.json();
+      
+      // Salvar o token JWT
+      if (data.token) {
+        authService.saveToken(data.token);
+        navigate('/home');
+      } else {
+        throw new Error('Token não recebido');
+      }
     } catch (err) {
-      console.error('Erro ao fazer login:', err);
-      alert('Erro ao fazer login');
+      console.error('Erro no login:', err);
+      setError('Usuário ou senha incorretos');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -157,9 +140,8 @@ export default function LoginPage() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                disabled={loading}
               >
-                <option value="">Escolha seu usuário</option>
+                <option value="" disabled>Escolha seu usuario</option>
                 {usuarios.map((usuario) => (
                   <option key={usuario.username} value={usuario.username}>
                     {usuario.username}
@@ -167,7 +149,6 @@ export default function LoginPage() {
                 ))}
               </select>
             </div>
-            {error && <span className="error-message">{error}</span>}
           </div>
 
           <div className="form-group">
@@ -182,6 +163,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Digite sua senha"
+                disabled={!username}
                 required
               />
             </div>
@@ -199,7 +181,7 @@ export default function LoginPage() {
         </form>
 
         <div className="login-footer">
-          <p>© 2026 RPG Maker.</p>
+           <p>© 2026 RPG Maker.</p>
           <p className="by-line"><span className="wd-text">Wil Dias</span></p>
           <a href="https://wildiasdev.com.br/" target="_blank" rel="noopener noreferrer" className="site-link">
             <svg className="button-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
