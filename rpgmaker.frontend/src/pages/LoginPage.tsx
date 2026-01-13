@@ -1,15 +1,51 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { authService } from '../services/authService';
 import backgroundImage from '../assets/images/background.jpg';
 import '../styles/LoginPage.css';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Lógica de login aqui
-    console.log('Login:', { username, password });
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/Auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Credenciais inválidas');
+      }
+
+      const data = await response.json();
+      
+      // Salvar o token JWT
+      if (data.token) {
+        authService.saveToken(data.token);
+        navigate('/home');
+      } else {
+        throw new Error('Token não recebido');
+      }
+    } catch (err) {
+      console.error('Erro no login:', err);
+      setError('Usuário ou senha incorretos');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -59,8 +95,14 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <button type="submit" className="login-button">
-            Entrar
+          {error && (
+            <div className="error-message">
+              {error}
+            </div>
+          )}
+
+          <button type="submit" className="login-button" disabled={loading}>
+            {loading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
 

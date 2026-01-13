@@ -139,8 +139,25 @@
   transition: background-color 0.3s;
 }
 
-.login-button:hover {
+.login-button:hover:not(:disabled) {
   background-color: #2563eb;
+}
+
+.login-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error-message {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  padding: 10px;
+  border-radius: 6px;
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  text-align: center;
+  margin-top: 10px;
 }
 
 .login-links {

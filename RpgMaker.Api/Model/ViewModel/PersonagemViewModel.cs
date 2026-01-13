@@ -12,5 +12,6 @@ namespace RpgMaker.Api.Model.ViewModel
         public long PX_Total { get; set; }
         public string Imagem { get; set; }
         public string Ficha { get; set; }
+        public int Idade { get; set; }
     }
 }
