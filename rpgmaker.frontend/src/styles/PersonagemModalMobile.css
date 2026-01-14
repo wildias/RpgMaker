@@ -1,0 +1,273 @@
+/* Estilos exclusivos para mobile */
+.modal-mobile .modal-overlay {
+  padding: 10px;
+  align-items: flex-start;
+}
+
+.modal-mobile .modal-content {
+  max-width: 100%;
+  max-height: 98vh;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.modal-mobile .ficha-header {
+  padding: 15px;
+}
+
+.modal-mobile .ficha-title {
+  font-size: 20px;
+}
+
+.modal-mobile .ficha-form {
+  padding: 15px;
+}
+
+/* Linha 1: Imagem + Level/PX lado a lado */
+.modal-mobile .mobile-top-row {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.modal-mobile .image-container {
+  flex-shrink: 0;
+}
+
+.modal-mobile .image-upload-box {
+  width: 140px;
+  height: 140px;
+}
+
+.modal-mobile .level-px-container {
+  padding: 8px;
+  background-color: #e8d7b8;
+  border: 2px solid rgba(139, 69, 19, 0.3);
+  border-radius: 8px;
+  flex: 1;
+}
+
+.modal-mobile .level-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.modal-mobile .level-field label {
+  font-size: 11px;
+  min-width: 60px;
+}
+
+.modal-mobile .level-field input {
+  width: 60px;
+  padding: 4px;
+  font-size: 12px;
+}
+
+.modal-mobile .px-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modal-mobile .px-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.modal-mobile .px-field label {
+  font-size: 11px;
+  min-width: 60px;
+}
+
+.modal-mobile .px-field input {
+  width: 60px;
+  padding: 4px;
+  font-size: 12px;
+}
+
+/* Dados do Personagem */
+.modal-mobile .basic-fields-container {
+  padding: 15px;
+  background-color: #f0e4cc;
+  border: 2px solid rgba(139, 69, 19, 0.3);
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.modal-mobile .form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.modal-mobile .form-field label {
+  font-size: 12px;
+}
+
+.modal-mobile .form-field input,
+.modal-mobile .form-field select {
+  padding: 8px;
+  font-size: 13px;
+}
+
+/* Estado Vital */
+.modal-mobile .estado-vital-container {
+  padding: 15px;
+  background-color: #f0e4cc;
+  border: 2px solid rgba(139, 69, 19, 0.3);
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.modal-mobile .estado-vital-title {
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+.modal-mobile .estado-vital-item {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.modal-mobile .estado-vital-item label {
+  font-size: 12px;
+}
+
+.modal-mobile .quadrado {
+  width: 24px;
+  height: 24px;
+}
+
+/* Atributos */
+.modal-mobile .ficha-section {
+  padding: 15px;
+  margin-bottom: 15px;
+  background-color: #f0e4cc;
+  border: 2px solid rgba(139, 69, 19, 0.3);
+  border-radius: 8px;
+}
+
+.modal-mobile .section-header {
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+.modal-mobile .atributos-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-mobile .atributo-item {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-mobile .atributo-item label {
+  min-width: 100px;
+  font-size: 12px;
+}
+
+/* Seções de texto */
+.modal-mobile .form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-mobile .form-field textarea {
+  padding: 10px;
+  font-size: 13px;
+  min-height: 80px;
+}
+
+/* Botões */
+.modal-mobile .ficha-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+  padding-top: 15px;
+}
+
+.modal-mobile .btn-primary,
+.modal-mobile .btn-secondary {
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+}
+
+.modal-mobile .modal-close {
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+}
+
+/* Mobile 480px */
+@media (max-width: 480px) {
+  .modal-mobile .mobile-top-row {
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .modal-mobile .image-upload-box {
+    width: 90px;
+    height: 90px;
+  }
+
+  .modal-mobile .level-px-container {
+    padding: 8px;
+  }
+
+  .modal-mobile .level-field label {
+    font-size: 11px;
+    min-width: 45px;
+  }
+
+  .modal-mobile .level-field input {
+    width: 50px;
+    padding: 4px;
+    font-size: 12px;
+  }
+
+  .modal-mobile .px-field label {
+    font-size: 10px;
+    min-width: 55px;
+  }
+
+  .modal-mobile .px-field input {
+    width: 50px;
+    padding: 3px;
+    font-size: 11px;
+  }
+
+  .modal-mobile .basic-fields-container,
+  .modal-mobile .estado-vital-container,
+  .modal-mobile .ficha-section {
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+
+  .modal-mobile .form-field label {
+    font-size: 11px;
+  }
+
+  .modal-mobile .form-field input,
+  .modal-mobile .form-field select {
+    padding: 7px;
+    font-size: 12px;
+  }
+
+  .modal-mobile .quadrado {
+    width: 22px;
+    height: 22px;
+  }
+}

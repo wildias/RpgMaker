@@ -12,6 +12,16 @@
   background-repeat: no-repeat;
 }
 
+/* Centralizar no celular */
+@media (max-width: 768px) {
+  .login-container {
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+}
+
 .login-overlay {
   position: absolute;
   top: 0;
@@ -31,6 +41,21 @@
   border-radius: 12px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   padding: 40px;
+}
+
+/* Ajustes para celular */
+@media (max-width: 768px) {
+  .login-box {
+    width: 100%;
+    max-width: 400px;
+    margin: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-box {
+    padding: 30px 20px;
+  }
 }
 
 .login-title {
