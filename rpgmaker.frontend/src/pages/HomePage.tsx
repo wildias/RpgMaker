@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { authService } from '../services/authService';
 import { personagemService } from '../services/personagemService';
 import type { PersonagemResponse, JWTClaims } from '../types/types';
 import PersonagemCard from '../components/PersonagemCard';
 import PersonagemModal from '../components/PersonagemModal';
+import DistribuirPXModal from '../components/DistribuirPXModal';
 import backgroundImage from '../assets/images/telaInicial.jpg';
 import '../styles/HomePage.css';
 
@@ -17,6 +19,9 @@ export default function HomePage() {
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<'create' | 'view' | 'edit'>('create');
+  const [selectedPersonagem, setSelectedPersonagem] = useState<PersonagemResponse | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isPXModalOpen, setIsPXModalOpen] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -67,25 +72,88 @@ export default function HomePage() {
   }, []);
 
   const handleCriarPersonagem = () => {
+    setSelectedPersonagem(null);
     setModalMode('create');
+    setIsModalOpen(true);
+  };
+
+  const handleVisualizarPersonagem = (personagemData: PersonagemResponse) => {
+    setSelectedPersonagem(personagemData);
+    setModalMode('edit');
     setIsModalOpen(true);
   };
 
   const handleSavePersonagem = async (data: any) => {
     try {
-      // TODO: Implementar chamada à API para salvar personagem
-      console.log('Salvando personagem:', data);
-      setIsModalOpen(false);
-      // Recarregar dados após salvar
-      // await loadData();
+      if (!claims) {
+        toast.error('Usuário não autenticado');
+        return;
+      }
+
+      const userId = parseInt(claims.userId);
+      
+      if (modalMode === 'create') {
+        // Criar novo personagem
+        await personagemService.criarPersonagem(userId, data);
+        
+        // Recarregar o personagem após criar
+        const personagemData = await personagemService.buscarPersonagem(userId);
+        setPersonagem(personagemData);
+        
+        toast.success('Personagem criado com sucesso!');
+        setIsModalOpen(false);
+      } else if (modalMode === 'edit') {
+        // Atualizar personagem existente
+        if (!selectedPersonagem) {
+          toast.error('Nenhum personagem selecionado');
+          return;
+        }
+
+        await personagemService.atualizarPersonagem(selectedPersonagem.personagemId, data);
+        
+        // Recarregar dados
+        if (claims.role === 'Player') {
+          const personagemData = await personagemService.buscarPersonagem(userId);
+          setPersonagem(personagemData);
+        } else {
+          const personagensData = await personagemService.buscarPersonagens();
+          setPersonagens(personagensData);
+        }
+        
+        toast.success('Personagem atualizado com sucesso!');
+        setIsModalOpen(false);
+      }
     } catch (err) {
       console.error('Erro ao salvar personagem:', err);
+      toast.error('Erro ao salvar personagem. Tente novamente.');
     }
   };
 
   const handleLogout = () => {
     authService.removeToken();
     navigate('/login');
+  };
+
+  const handleDistribuirPX = () => {
+    setIsMenuOpen(false);
+    setIsPXModalOpen(true);
+  };
+
+  const handleSubmitDistribuirPX = async (distribuicoes: { personagemId: number; px: number }[]) => {
+    try {
+      await personagemService.distribuirPX(distribuicoes);
+      toast.success('PX distribuído com sucesso!');
+      setIsPXModalOpen(false);
+      
+      // Recarregar lista de personagens
+      if (claims?.role === 'Mestre') {
+        const personagensData = await personagemService.buscarPersonagens();
+        setPersonagens(personagensData);
+      }
+    } catch (error) {
+      console.error('Erro ao distribuir PX:', error);
+      toast.error('Erro ao distribuir PX. Tente novamente.');
+    }
   };
 
   if (loading) {
@@ -127,32 +195,40 @@ export default function HomePage() {
         {/* Cabeçalho */}
         <header className="home-header">
           <h1 className="home-title">As Crônicas de Ilfandyr</h1>
-          <button onClick={handleLogout} className="logout-button" title="Sair">
-            <svg viewBox="0 0 24 24" fill="currentColor" className="logout-icon">
-              {/* Porta medieval com arco */}
-              <path d="M4 22h16V9c0-2-1-3-3-3h-2V4c0-1-1-2-2-2h-2c-1 0-2 1-2 2v2H7C5 6 4 7 4 9v13z" fill="#654321"/>
-              <path d="M6 8h12v14H6z" fill="#8B4513"/>
-              <rect x="6" y="8" width="6" height="14" fill="#6B4423"/>
-              <rect x="12" y="8" width="6" height="14" fill="#5A3615"/>
-              <circle cx="10" cy="15" r="0.7" fill="#2C1810"/>
-              <circle cx="14" cy="15" r="0.7" fill="#2C1810"/>
-              {/* Dobradiças */}
-              <rect x="11.5" y="9" width="1" height="2" fill="#1a1a1a" rx="0.3"/>
-              <rect x="11.5" y="13" width="1" height="2" fill="#1a1a1a" rx="0.3"/>
-              <rect x="11.5" y="17" width="1" height="2" fill="#1a1a1a" rx="0.3"/>
-              {/* Pregos/detalhes */}
-              <circle cx="8" cy="10" r="0.4" fill="#2C1810"/>
-              <circle cx="8" cy="12" r="0.4" fill="#2C1810"/>
-              <circle cx="8" cy="14" r="0.4" fill="#2C1810"/>
-              <circle cx="8" cy="16" r="0.4" fill="#2C1810"/>
-              <circle cx="8" cy="18" r="0.4" fill="#2C1810"/>
-              <circle cx="16" cy="10" r="0.4" fill="#2C1810"/>
-              <circle cx="16" cy="12" r="0.4" fill="#2C1810"/>
-              <circle cx="16" cy="14" r="0.4" fill="#2C1810"/>
-              <circle cx="16" cy="16" r="0.4" fill="#2C1810"/>
-              <circle cx="16" cy="18" r="0.4" fill="#2C1810"/>
-            </svg>
-          </button>
+          
+          {/* Menu Dropdown */}
+          <div className="menu-container">
+            <button 
+              onClick={() => setIsMenuOpen(!isMenuOpen)} 
+              className="menu-button" 
+              title="Menu"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" className="menu-icon">
+                <circle cx="12" cy="5" r="2"/>
+                <circle cx="12" cy="12" r="2"/>
+                <circle cx="12" cy="19" r="2"/>
+              </svg>
+            </button>
+
+            {isMenuOpen && (
+              <div className="dropdown-menu">
+                {claims?.role === 'Mestre' && (
+                  <button onClick={handleDistribuirPX} className="menu-item">
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="menu-item-icon">
+                      <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 18c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm-1-9h2v2h-2v-2zm0 4h2v2h-2v-2z"/>
+                    </svg>
+                    Distribuir PX
+                  </button>
+                )}
+                <button onClick={handleLogout} className="menu-item menu-item-logout">
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="menu-item-icon">
+                    <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                  </svg>
+                  Sair
+                </button>
+              </div>
+            )}
+          </div>
         </header>
 
         {/* Conteúdo Principal */}
@@ -161,7 +237,10 @@ export default function HomePage() {
             <>
               {personagem ? (
                 <div className="player-personagem">
-                  <PersonagemCard personagem={personagem} />
+                  <PersonagemCard 
+                    personagem={personagem} 
+                    onClick={() => handleVisualizarPersonagem(personagem)}
+                  />
                 </div>
               ) : (
                 <div className="no-personagem">
@@ -183,7 +262,11 @@ export default function HomePage() {
               {personagens.length > 0 ? (
                 <div className="personagens-grid">
                   {personagens.map((p) => (
-                    <PersonagemCard key={p.PersonagemId} personagem={p} />
+                    <PersonagemCard 
+                      key={p.personagemId} 
+                      personagem={p}
+                      onClick={() => handleVisualizarPersonagem(p)}
+                    />
                   ))}
                 </div>
               ) : (
@@ -200,10 +283,19 @@ export default function HomePage() {
       <PersonagemModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        personagem={personagem}
+        personagem={selectedPersonagem || personagem}
         mode={modalMode}
         onSave={handleSavePersonagem}
       />
+
+      {/* Modal de Distribuir PX */}
+      <DistribuirPXModal
+        isOpen={isPXModalOpen}
+        onClose={() => setIsPXModalOpen(false)}
+        personagens={personagens}
+        onDistribuir={handleSubmitDistribuirPX}
+      />
+
         {/* Rodapé */}
         <footer className="home-footer">
           <p>© 2026 RPG Maker.</p>

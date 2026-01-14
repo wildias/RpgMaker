@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { PersonagemResponse } from '../types/types';
+import ImageCropper from './ImageCropper';
 import '../styles/PersonagemModal.css';
 
 interface PersonagemModalProps {
@@ -9,6 +10,19 @@ interface PersonagemModalProps {
   mode: 'create' | 'view' | 'edit';
   onSave?: (data: any) => void;
 }
+
+// Função para garantir que a imagem base64 tenha o formato correto
+const formatImageSrc = (imageData: string | null | undefined): string | null => {
+  if (!imageData || imageData.trim() === '') return null;
+  
+  // Se já tem o prefixo data:image, retorna como está
+  if (imageData.startsWith('data:image')) {
+    return imageData;
+  }
+  
+  // Se for apenas a string base64, adiciona o prefixo
+  return `data:image/jpeg;base64,${imageData}`;
+};
 
 export default function PersonagemModal({ isOpen, onClose, personagem, mode, onSave }: PersonagemModalProps) {
   const [formData, setFormData] = useState({
@@ -36,16 +50,78 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
     imagem: ''
   });
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [showCropper, setShowCropper] = useState(false);
+  const [tempImage, setTempImage] = useState<string | null>(null);
+  const [initialFormData, setInitialFormData] = useState<any>(null);
+  const [hasChanges, setHasChanges] = useState(false);
 
   useEffect(() => {
     if (personagem) {
-      setFormData({
-        nome: personagem.Nome || '',
-        numeroIdentificacao: personagem.NumeroIdentificacao?.toString() || '',
-        idade: personagem.Idade || 0,
-        reino: personagem.Reino || '',
-        aptidao: personagem.Aptidao || '',
-        nivel: 1,
+      // Parsear a ficha JSON se existir
+      let fichaData: any = {
+        EstadoVital: {
+          Vigor: Array(10).fill(false),
+          Essencia: Array(10).fill(false),
+          LimiteSupressao: Array(5).fill(false),
+        },
+        Atributos: {
+          Potencia: Array(5).fill(false),
+          Agilidade: Array(5).fill(false),
+          Vontade: Array(5).fill(false),
+          Engenho: Array(5).fill(false),
+          Presenca: Array(5).fill(false),
+        },
+        EquipamentosPosses: '',
+        ManifestacaoMagica: '',
+        Historia: '',
+      };
+
+      if (personagem.ficha) {
+        try {
+          fichaData = JSON.parse(personagem.ficha);
+        } catch (e) {
+          console.error('Erro ao parsear ficha:', e);
+        }
+      }
+
+      const loadedData = {
+        nome: personagem.nome || '',
+        numeroIdentificacao: personagem.numeroIdentificacao?.toString() || '',
+        idade: personagem.idade || 0,
+        reino: personagem.reino || '',
+        aptidao: personagem.aptidao || '',
+        nivel: personagem.level || 0,
+        pxAtual: personagem.pX_Atual || 0,
+        pxTotal: personagem.pX_Total || 0,
+        vigor: fichaData.EstadoVital?.Vigor || Array(10).fill(false),
+        essencia: fichaData.EstadoVital?.Essencia || Array(10).fill(false),
+        limiteSupressao: fichaData.EstadoVital?.LimiteSupressao || Array(5).fill(false),
+        potencia: fichaData.Atributos?.Potencia || Array(5).fill(false),
+        agilidade: fichaData.Atributos?.Agilidade || Array(5).fill(false),
+        vontade: fichaData.Atributos?.Vontade || Array(5).fill(false),
+        engenho: fichaData.Atributos?.Engenho || Array(5).fill(false),
+        presenca: fichaData.Atributos?.Presenca || Array(5).fill(false),
+        pontosDeVida: 0,
+        pontosDeVidaMaximos: 0,
+        manifestacaoMagica: fichaData.ManifestacaoMagica || '',
+        historia: fichaData.Historia || '',
+        equipamento: fichaData.EquipamentosPosses || '',
+        imagem: personagem.imagem || ''
+      };
+
+      setFormData(loadedData);
+      setInitialFormData(JSON.parse(JSON.stringify(loadedData)));
+      setPreviewImage(personagem.imagem || null);
+      setHasChanges(false);
+    } else {
+      // Modo criar - resetar tudo
+      const emptyData = {
+        nome: '',
+        numeroIdentificacao: '',
+        idade: 0,
+        reino: '',
+        aptidao: '',
+        nivel: 0,
         pxAtual: 0,
         pxTotal: 0,
         vigor: Array(10).fill(false),
@@ -59,13 +135,24 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
         pontosDeVida: 0,
         pontosDeVidaMaximos: 0,
         manifestacaoMagica: '',
-        historia: personagem.Ficha || '',
+        historia: '',
         equipamento: '',
-        imagem: personagem.Imagem || ''
-      });
-      setPreviewImage(personagem.Imagem || null);
+        imagem: ''
+      };
+      setFormData(emptyData);
+      setInitialFormData(null);
+      setPreviewImage(null);
+      setHasChanges(false);
     }
   }, [personagem]);
+
+  // Detectar mudanças comparando formData com initialFormData
+  useEffect(() => {
+    if (initialFormData && mode === 'edit') {
+      const changed = JSON.stringify(formData) !== JSON.stringify(initialFormData);
+      setHasChanges(changed);
+    }
+  }, [formData, initialFormData, mode]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -82,11 +169,23 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPreviewImage(reader.result as string);
-        setFormData(prev => ({ ...prev, imagem: reader.result as string }));
+        setTempImage(reader.result as string);
+        setShowCropper(true);
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleCropComplete = (croppedImage: string) => {
+    setPreviewImage(croppedImage);
+    setFormData(prev => ({ ...prev, imagem: croppedImage }));
+    setShowCropper(false);
+    setTempImage(null);
+  };
+
+  const handleCropCancel = () => {
+    setShowCropper(false);
+    setTempImage(null);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -98,18 +197,46 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
 
   const toggleEstadoVital = (tipo: 'vigor' | 'essencia' | 'limiteSupressao', index: number) => {
     if (isReadOnly) return;
-    setFormData(prev => ({
-      ...prev,
-      [tipo]: prev[tipo].map((val: boolean, i: number) => i === index ? !val : val)
-    }));
+    setFormData(prev => {
+      const currentArray = prev[tipo];
+      const isCurrentlyFilled = currentArray[index];
+      
+      // Se estiver preenchido, remove este e todos os posteriores (mantém anteriores)
+      if (isCurrentlyFilled) {
+        return {
+          ...prev,
+          [tipo]: currentArray.map((val: boolean, i: number) => i < index ? val : false)
+        };
+      } else {
+        // Se não estiver preenchido, preenche este e todos os anteriores
+        return {
+          ...prev,
+          [tipo]: currentArray.map((val: boolean, i: number) => i <= index ? true : val)
+        };
+      }
+    });
   };
 
   const toggleAtributo = (tipo: 'potencia' | 'agilidade' | 'vontade' | 'engenho' | 'presenca', index: number) => {
     if (isReadOnly) return;
-    setFormData(prev => ({
-      ...prev,
-      [tipo]: prev[tipo].map((val: boolean, i: number) => i === index ? !val : val)
-    }));
+    setFormData(prev => {
+      const currentArray = prev[tipo];
+      const isCurrentlyFilled = currentArray[index];
+      
+      // Se estiver preenchido, remove este e todos os posteriores (mantém anteriores)
+      if (isCurrentlyFilled) {
+        return {
+          ...prev,
+          [tipo]: currentArray.map((val: boolean, i: number) => i < index ? val : false)
+        };
+      } else {
+        // Se não estiver preenchido, preenche este e todos os anteriores
+        return {
+          ...prev,
+          [tipo]: currentArray.map((val: boolean, i: number) => i <= index ? true : val)
+        };
+      }
+    });
   };
 
   const isReadOnly = mode === 'view';
@@ -117,7 +244,15 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <>
+      {showCropper && tempImage && (
+        <ImageCropper
+          image={tempImage}
+          onCropComplete={handleCropComplete}
+          onCancel={handleCropCancel}
+        />
+      )}
+      <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content ficha-rpg" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose} title="Fechar">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -141,7 +276,7 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
               />
               <label htmlFor="personagem-image" className={`image-upload-box ${isReadOnly ? 'readonly' : ''}`}>
                 {previewImage ? (
-                  <img src={previewImage} alt="Personagem" className="preview-image" />
+                  <img src={formatImageSrc(previewImage) || previewImage} alt="Personagem" className="preview-image" />
                 ) : (
                   <div className="image-placeholder">
                     <svg viewBox="0 0 24 24" fill="currentColor">
@@ -503,18 +638,30 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
           </div>
 
           {/* Botões de Ação */}
-          {!isReadOnly && (
+          {mode === 'create' && (
             <div className="ficha-actions">
               <button type="button" onClick={onClose} className="btn-secondary">
                 Cancelar
               </button>
               <button type="submit" className="btn-primary">
-                {mode === 'create' ? 'Criar Personagem' : 'Salvar Alterações'}
+                Criar Personagem
+              </button>
+            </div>
+          )}
+          
+          {mode === 'edit' && hasChanges && (
+            <div className="ficha-actions">
+              <button type="button" onClick={onClose} className="btn-secondary">
+                Cancelar
+              </button>
+              <button type="submit" className="btn-primary">
+                Atualizar Personagem
               </button>
             </div>
           )}
         </form>
       </div>
     </div>
+    </>
   );
 }

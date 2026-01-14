@@ -3,14 +3,31 @@ import '../styles/PersonagemCard.css';
 
 interface PersonagemCardProps {
   personagem: PersonagemResponse;
+  onClick?: () => void;
 }
 
-export default function PersonagemCard({ personagem }: PersonagemCardProps) {
+// Função para garantir que a imagem base64 tenha o formato correto
+const formatImageSrc = (imageData: string | null | undefined): string | null => {
+  if (!imageData || imageData.trim() === '') return null;
+  
+  // Se já tem o prefixo data:image, retorna como está
+  if (imageData.startsWith('data:image')) {
+    return imageData;
+  }
+  
+  // Se for apenas a string base64, adiciona o prefixo
+  // Assume JPEG por padrão, mas pode ser ajustado
+  return `data:image/jpeg;base64,${imageData}`;
+};
+
+export default function PersonagemCard({ personagem, onClick }: PersonagemCardProps) {
+  const imageSrc = formatImageSrc(personagem.imagem);
+  
   return (
-    <div className="personagem-card">
+    <div className="personagem-card" onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default' }}>
       <div className="personagem-image">
-        {personagem.Imagem ? (
-          <img src={personagem.Imagem} alt={personagem.Nome} />
+        {imageSrc ? (
+          <img src={imageSrc} alt={personagem.nome} />
         ) : (
           <div className="placeholder-image">
             <svg viewBox="0 0 24 24" fill="currentColor">
@@ -21,27 +38,25 @@ export default function PersonagemCard({ personagem }: PersonagemCardProps) {
       </div>
       
       <div className="personagem-info">
-        <h3 className="personagem-nome">{personagem.Nome}</h3>
+        <div className="personagem-header">
+          <h3 className="personagem-nome">{personagem.nome || 'Sem nome'}</h3>
+          <div className="personagem-level">Nv. {personagem.level ?? 0}</div>
+        </div>
         
         <div className="personagem-details">
           <div className="detail-item">
-            <span className="detail-label">ID:</span>
-            <span className="detail-value">{personagem.NumeroIdentificacao}</span>
-          </div>
-          
-          <div className="detail-item">
             <span className="detail-label">Reino:</span>
-            <span className="detail-value">{personagem.Reino}</span>
+            <span className="detail-value">{personagem.reino || 'Não definido'}</span>
           </div>
           
           <div className="detail-item">
             <span className="detail-label">Idade:</span>
-            <span className="detail-value">{personagem.Idade} anos</span>
+            <span className="detail-value">{personagem.idade || 0} anos</span>
           </div>
           
           <div className="detail-item">
             <span className="detail-label">Aptidão:</span>
-            <span className="detail-value">{personagem.Aptidao}</span>
+            <span className="detail-value">{personagem.aptidao || 'Não definida'}</span>
           </div>
         </div>
       </div>

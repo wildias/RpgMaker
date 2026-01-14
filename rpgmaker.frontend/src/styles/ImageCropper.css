@@ -1,0 +1,298 @@
+/* Image Cropper Overlay */
+.image-cropper-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal do Cropper */
+.image-cropper-modal {
+  background: linear-gradient(135deg, #2a1810 0%, #1a1008 100%);
+  border: 3px solid #8B4513;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Header */
+.cropper-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 2px solid rgba(139, 69, 19, 0.5);
+}
+
+.cropper-header h3 {
+  color: #e8d4b8;
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  color: #e8d4b8;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  border-radius: 4px;
+}
+
+.close-btn:hover {
+  background: rgba(139, 69, 19, 0.3);
+  color: #fff;
+}
+
+.close-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Body */
+.cropper-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+/* Container de Crop */
+.crop-container {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  background: #1a1a1a;
+  border: 3px solid #8B4513;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+.crop-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  transition: transform 0.1s ease-out;
+}
+
+.crop-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 160px;
+  height: 160px;
+  border: 2px solid rgba(184, 134, 11, 0.8);
+  border-radius: 8px;
+  pointer-events: none;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+}
+
+/* Instruções */
+.cropper-instructions {
+  text-align: center;
+  color: #b8a591;
+  font-size: 14px;
+  padding: 8px 16px;
+  background: rgba(139, 69, 19, 0.2);
+  border-radius: 8px;
+  border: 1px solid rgba(139, 69, 19, 0.3);
+}
+
+.cropper-instructions p {
+  margin: 0;
+}
+
+/* Controles */
+.cropper-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 12px;
+  border-top: 2px solid rgba(139, 69, 19, 0.5);
+}
+
+/* Controles de Zoom */
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.control-btn {
+  background: linear-gradient(135deg, #654321 0%, #4a3219 100%);
+  border: 2px solid #8B4513;
+  color: #e8d4b8;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.control-btn:hover {
+  background: linear-gradient(135deg, #7a5230 0%, #5a3e22 100%);
+  border-color: #B8860B;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.4);
+}
+
+.control-btn:active {
+  transform: translateY(0);
+}
+
+.control-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.zoom-value {
+  color: #e8d4b8;
+  font-size: 16px;
+  font-weight: 600;
+  min-width: 60px;
+  text-align: center;
+  padding: 8px 12px;
+  background: rgba(139, 69, 19, 0.2);
+  border-radius: 6px;
+  border: 1px solid rgba(139, 69, 19, 0.3);
+}
+
+/* Botões de Ação */
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.action-buttons button {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-reset {
+  background: linear-gradient(135deg, #666 0%, #444 100%);
+  color: #fff;
+  border-color: #888;
+}
+
+.btn-reset:hover {
+  background: linear-gradient(135deg, #777 0%, #555 100%);
+  border-color: #999;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn-cancel {
+  background: linear-gradient(135deg, #8B0000 0%, #640000 100%);
+  color: #fff;
+  border-color: #A52A2A;
+}
+
+.btn-cancel:hover {
+  background: linear-gradient(135deg, #A52A2A 0%, #7a1414 100%);
+  border-color: #CD5C5C;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 0, 0, 0.4);
+}
+
+.btn-save {
+  background: linear-gradient(135deg, #228B22 0%, #1a6b1a 100%);
+  color: #fff;
+  border-color: #32CD32;
+}
+
+.btn-save:hover {
+  background: linear-gradient(135deg, #32CD32 0%, #228B22 100%);
+  border-color: #90EE90;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(34, 139, 34, 0.4);
+}
+
+.action-buttons button:active {
+  transform: translateY(0);
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .crop-container {
+    width: 300px;
+    height: 300px;
+  }
+
+  .image-cropper-modal {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .cropper-header h3 {
+    font-size: 20px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .action-buttons button {
+    width: 100%;
+  }
+}

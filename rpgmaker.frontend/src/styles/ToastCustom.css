@@ -1,0 +1,120 @@
+/* Customização do Toast para tema RPG medieval */
+
+/* Container principal */
+.Toastify__toast-container {
+  z-index: 9999;
+}
+
+/* Toast geral */
+.Toastify__toast {
+  font-family: 'MedievalSharp', 'Cinzel', serif;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(139, 69, 19, 0.6);
+  backdrop-filter: blur(10px);
+  min-height: 64px;
+}
+
+/* Toast de sucesso */
+.Toastify__toast--success {
+  background: linear-gradient(135deg, rgba(34, 139, 34, 0.9) 0%, rgba(0, 100, 0, 0.9) 100%);
+  border-color: rgba(144, 238, 144, 0.5);
+}
+
+.Toastify__toast--success .Toastify__toast-icon svg {
+  fill: #90EE90;
+}
+
+/* Toast de erro */
+.Toastify__toast--error {
+  background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(100, 0, 0, 0.9) 100%);
+  border-color: rgba(255, 99, 71, 0.5);
+}
+
+.Toastify__toast--error .Toastify__toast-icon svg {
+  fill: #FF6347;
+}
+
+/* Toast de info */
+.Toastify__toast--info {
+  background: linear-gradient(135deg, rgba(0, 100, 139, 0.9) 0%, rgba(0, 70, 100, 0.9) 100%);
+  border-color: rgba(135, 206, 250, 0.5);
+}
+
+/* Toast de warning */
+.Toastify__toast--warning {
+  background: linear-gradient(135deg, rgba(184, 134, 11, 0.9) 0%, rgba(139, 101, 8, 0.9) 100%);
+  border-color: rgba(255, 215, 0, 0.5);
+}
+
+/* Corpo do toast */
+.Toastify__toast-body {
+  padding: 8px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Barra de progresso */
+.Toastify__progress-bar {
+  height: 4px;
+}
+
+.Toastify__progress-bar--success {
+  background: linear-gradient(to right, #90EE90, #228B22);
+}
+
+.Toastify__progress-bar--error {
+  background: linear-gradient(to right, #FF6347, #8B0000);
+}
+
+.Toastify__progress-bar--info {
+  background: linear-gradient(to right, #87CEEB, #00648B);
+}
+
+.Toastify__progress-bar--warning {
+  background: linear-gradient(to right, #FFD700, #B8860B);
+}
+
+/* Botão de fechar */
+.Toastify__close-button {
+  color: rgba(255, 255, 255, 0.8);
+  opacity: 0.8;
+}
+
+.Toastify__close-button:hover {
+  opacity: 1;
+  color: #ffffff;
+}
+
+/* Animações personalizadas */
+@keyframes toastSlideIn {
+  from {
+    transform: translate3d(110%, 0, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes toastSlideOut {
+  from {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  to {
+    transform: translate3d(110%, 0, 0);
+    opacity: 0;
+  }
+}
+
+.Toastify__toast--top-right {
+  animation: toastSlideIn 0.3s ease-out;
+}
+
+.Toastify__toast--top-right.Toastify__toast--closing {
+  animation: toastSlideOut 0.3s ease-in;
+}

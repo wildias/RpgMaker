@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RpgMaker.Api.Data;
 
@@ -11,9 +12,11 @@ using RpgMaker.Api.Data;
 namespace RpgMaker.Api.Migrations
 {
     [DbContext(typeof(RpgMakerContext))]
-    partial class RpgMakerContextModelSnapshot : ModelSnapshot
+    [Migration("20260114130833_novaColunaLevel_TabelaPersonagem")]
+    partial class novaColunaLevel_TabelaPersonagem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

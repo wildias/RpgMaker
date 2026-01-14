@@ -4,7 +4,7 @@ namespace RpgMaker.Api.Model.ViewModel
 {
     public class PersonagemViewModel
     {
-        public string Name { get; set; }
+        public string Nome { get; set; }
         public long NumeroIdentificacao { get; set; }
         public string Reino { get; set; }
         public string Aptidao { get; set; }
@@ -13,5 +13,6 @@ namespace RpgMaker.Api.Model.ViewModel
         public string Imagem { get; set; }
         public string Ficha { get; set; }
         public int Idade { get; set; }
+        public int Level { get; set; }
     }
 }

@@ -15,5 +15,6 @@ namespace RpgMaker.Api.Model
         public byte[] Imagem { get; set; }
         public string Ficha { get; set; }
         public int Idade { get; set; }
+        public int Level { get; set; }
     }
 }

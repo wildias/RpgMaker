@@ -28,15 +28,16 @@ namespace RpgMaker.Api.Services
                 var novoPersonagem = new Personagem
                 {
                     Usuario = usuario,
-                    Nome = request.Name,
+                    Nome = request.Nome,
                     NumeroIdentificacao = request.NumeroIdentificacao,
                     Aptidao = request.Aptidao,
                     Ficha = request.Ficha,
                     Imagem = request.Imagem != null ? ImagemUtil.ComprimirImagemBase64ParaBytes(request.Imagem) : null,
                     PX_Atual = 0,
                     PX_Total = 0,
-                    Reino = Enum.Parse<ReinoEnum>(request.Reino),
-                    Idade = request.Idade
+                    Reino = ExEnum.FromDescricao(request.Reino),
+                    Idade = request.Idade,
+                    Level = 0
                 };
 
                 _context.Personagem.Add(novoPersonagem);
@@ -60,9 +61,10 @@ namespace RpgMaker.Api.Services
 
                 if (personagem == null) return false;
 
-                personagem.Nome = request.Name;
+                personagem.Nome = request.Nome;
                 personagem.Ficha = request.Ficha;
                 personagem.Imagem = request.Imagem != null ? ImagemUtil.ComprimirImagemBase64ParaBytes(request.Imagem) : personagem.Imagem;
+                personagem.Level = request.Level;
 
                 await _context.SaveChangesAsync();
 
@@ -75,35 +77,21 @@ namespace RpgMaker.Api.Services
             }
         }
 
-        internal async Task<bool> DistribuirPX(int personagemId, long pxMesa, bool paraTodos = false)
+        internal async Task<bool> DistribuirPX(List<DistribuirPXViewModel> request)
         {
             try
             {
-                if (paraTodos)
+                foreach (var p in request)
                 {
-                    var personagens = await _context.Personagem.ToListAsync();
+                    var personagem = await _context.Personagem.FirstOrDefaultAsync(ps => ps.PersonagemId == p.PersonagemId);
 
-                    foreach (var personagem in personagens)
-                    {
-                        personagem.PX_Atual = (personagem.PX_Atual + pxMesa);
-                        personagem.PX_Total = (personagem.PX_Total + pxMesa);
-                    }
-
-                    await _context.SaveChangesAsync();
-                    return true;
+                    personagem.PX_Atual = (personagem.PX_Atual + p.Px);
+                    personagem.PX_Total = (personagem.PX_Total + p.Px);
                 }
-                else
-                {
-                    var personagem = await _context.Personagem.FirstOrDefaultAsync(u => u.PersonagemId == personagemId);
 
-                    if (personagem == null) return false;
+                await _context.SaveChangesAsync();
+                return true;
 
-                    personagem.PX_Atual = (personagem.PX_Atual + pxMesa);
-                    personagem.PX_Total = (personagem.PX_Total + pxMesa);
-
-                    await _context.SaveChangesAsync();
-                    return true;
-                }
             }
             catch (Exception ex)
             {
@@ -128,8 +116,9 @@ namespace RpgMaker.Api.Services
                         Imagem = p.Imagem != null ? ImagemUtil.DescomprimirImagemParaBase64(p.Imagem) : null,
                         PX_Atual = p.PX_Atual,
                         PX_Total = p.PX_Total,
-                        Reino = p.Reino.ToString(),
-                        Idade = p.Idade
+                        Reino = ExEnum.GetDescricao(p.Reino),
+                        Idade = p.Idade,
+                        Level = p.Level
                     })
                     .FirstOrDefaultAsync();
 
@@ -157,8 +146,9 @@ namespace RpgMaker.Api.Services
                         Imagem = p.Imagem != null ? ImagemUtil.DescomprimirImagemParaBase64(p.Imagem) : null,
                         PX_Atual = p.PX_Atual,
                         PX_Total = p.PX_Total,
-                        Reino = p.Reino.ToString(),
-                        Idade = p.Idade
+                        Reino = ExEnum.GetDescricao(p.Reino),
+                        Idade = p.Idade,
+                        Level = p.Level
                     })
                     .ToListAsync();
 

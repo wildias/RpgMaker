@@ -14,5 +14,6 @@ namespace RpgMaker.Api.Model.Response
         public string Imagem { get; set; }
         public string Ficha { get; set; }
         public int Idade { get; set; }
+        public int Level { get; set; }
     }
 }

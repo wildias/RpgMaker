@@ -18,7 +18,7 @@ namespace RpgMaker.Api.Controllers
             _personagemService = personagemService;
         }
 
-        [HttpPost("criar")]
+        [HttpPost("criar/{usuarioId}")]
         public async Task<IActionResult> CriarPersonagem(int usuarioId, [FromBody] PersonagemViewModel personagem)
         {
             var novoPersonagem = await _personagemService.CriarPersonagem(usuarioId, personagem);
@@ -44,10 +44,10 @@ namespace RpgMaker.Api.Controllers
             return BadRequest("Erro ao atualizar personagem");
         }
 
-        [HttpPut("atualizarpx/{personagemId}")]
-        public async Task<IActionResult> DistribuirPX(int personagemId, long px, bool paraTodos)
+        [HttpPut("atualizarpx")]
+        public async Task<IActionResult> DistribuirPX([FromBody] List<DistribuirPXViewModel> request)
         {
-            var destribuirPX = await _personagemService.DistribuirPX(personagemId, px, paraTodos);
+            var destribuirPX = await _personagemService.DistribuirPX(request);
 
             if (destribuirPX)
             {
