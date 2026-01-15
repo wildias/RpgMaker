@@ -41,6 +41,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1000;
 }
 
 .logout-button {
@@ -84,6 +85,7 @@
 .menu-container {
   position: absolute;
   right: 20px;
+  z-index: 1050;
 }
 
 .menu-button {
@@ -125,6 +127,7 @@
   backdrop-filter: blur(10px);
   overflow: hidden;
   animation: dropdownFadeIn 0.2s ease-out;
+  z-index: 1100;
 }
 
 @keyframes dropdownFadeIn {

@@ -7,6 +7,7 @@ import type { PersonagemResponse, JWTClaims } from '../types/types';
 import PersonagemCard from '../components/PersonagemCard';
 import PersonagemModal from '../components/PersonagemModal';
 import DistribuirPXModal from '../components/DistribuirPXModal';
+import { useSignalR } from '../hooks/useSignalR';
 import backgroundImage from '../assets/images/telaInicial.jpg';
 import '../styles/HomePage.css';
 
@@ -22,6 +23,78 @@ export default function HomePage() {
   const [selectedPersonagem, setSelectedPersonagem] = useState<PersonagemResponse | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isPXModalOpen, setIsPXModalOpen] = useState(false);
+
+  // Configurar SignalR para atualização em tempo real
+  useSignalR({
+    enabled: true,
+    
+    // Quando um personagem é criado
+    onPersonagemCriado: (novoPersonagem) => {
+      console.log('Novo personagem criado via SignalR:', novoPersonagem);
+      
+      if (claims?.role === 'Mestre') {
+        // Adiciona o novo personagem à lista
+        setPersonagens(prev => [...prev, novoPersonagem]);
+        toast.info(`Novo personagem criado: ${novoPersonagem.nome}`);
+      }
+    },
+    
+    // Quando um personagem é atualizado
+    onPersonagemAtualizado: (personagemAtualizado) => {
+      console.log('Personagem atualizado via SignalR:', personagemAtualizado);
+      
+      if (claims?.role === 'Player') {
+        // Se for o personagem do player, atualiza
+        if (personagem && personagem.personagemId === personagemAtualizado.personagemId) {
+          setPersonagem(personagemAtualizado);
+          toast.info('Seu personagem foi atualizado');
+        }
+      } else if (claims?.role === 'Mestre') {
+        // Atualiza na lista de personagens
+        setPersonagens(prev => 
+          prev.map(p => p.personagemId === personagemAtualizado.personagemId ? personagemAtualizado : p)
+        );
+        toast.info(`Personagem atualizado: ${personagemAtualizado.nome}`);
+      }
+    },
+    
+    // Quando um personagem é excluído
+    onPersonagemExcluido: (personagemId) => {
+      console.log('Personagem excluído via SignalR:', personagemId);
+      
+      if (claims?.role === 'Player') {
+        // Se for o personagem do player, remove
+        if (personagem && personagem.personagemId === personagemId) {
+          setPersonagem(null);
+          toast.warning('Seu personagem foi excluído');
+        }
+      } else if (claims?.role === 'Mestre') {
+        // Remove da lista
+        setPersonagens(prev => prev.filter(p => p.personagemId !== personagemId));
+        toast.info('Um personagem foi excluído');
+      }
+    },
+    
+    // Quando PX é distribuído
+    onPXDistribuido: (personagemId, pxAtual, pxTotal) => {
+      console.log('PX distribuído via SignalR:', { personagemId, pxAtual, pxTotal });
+      
+      if (claims?.role === 'Player') {
+        // Se for o personagem do player, atualiza PX
+        if (personagem && personagem.personagemId === personagemId) {
+          setPersonagem(prev => prev ? { ...prev, pX_Atual: pxAtual, pX_Total: pxTotal } : null);
+          toast.success(`Você recebeu PX! Total: ${pxTotal}`);
+        }
+      } else if (claims?.role === 'Mestre') {
+        // Atualiza PX na lista
+        setPersonagens(prev =>
+          prev.map(p =>
+            p.personagemId === personagemId ? { ...p, pX_Atual: pxAtual, pX_Total: pxTotal } : p
+          )
+        );
+      }
+    },
+  });
 
   useEffect(() => {
     const loadData = async () => {

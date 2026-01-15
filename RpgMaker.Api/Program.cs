@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RpgMaker.Api.Data;
+using RpgMaker.Api.Hubs;
 using RpgMaker.Api.Model;
 using RpgMaker.Api.Services;
 using System.Text;
@@ -42,26 +43,28 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 // CORS
-const string CorsDevPolicy = "AllowDevOrigins";
+const string CorsDevPolicy = "AllowFrontend";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(CorsDevPolicy, policy =>
+        policy.WithOrigins("http://localhost:3000", "http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials() // habilite apenas se usar cookies; NÃO combine com AllowAnyOrigin
+    );
+});
+
 //builder.Services.AddCors(options =>
 //{
-//    options.AddPolicy(CorsDevPolicy, policy =>
-//        policy.WithOrigins("http://localhost:3000", "http://localhost:5173")
-//              .AllowAnyHeader()
-//              .AllowAnyMethod()
-//    // .AllowCredentials() // habilite apenas se usar cookies; NÃO combine com AllowAnyOrigin
+//    options.AddPolicy("AllowDevOrigins", policy =>
+//        policy
+//            .SetIsOriginAllowed(_ => true)
+//            .AllowAnyHeader()
+//            .AllowAnyMethod()
+//            .AllowCredentials()
 //    );
 //});
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowDevOrigins", policy =>
-        policy
-            .SetIsOriginAllowed(_ => true)
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-    );
-});
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -72,12 +75,15 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.WebHost.ConfigureKestrel(options => { options.ListenAnyIP(5000); });
 
 var app = builder.Build();
+app.UseCors("AllowFrontend");
 
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<RpgMakerContext>();
     dbContext.Database.Migrate();
 }
+
+app.MapHub<PersonagemHub>("/personagemHub");
 
 if (app.Environment.IsDevelopment())
 {

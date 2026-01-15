@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using RpgMaker.Api.Data;
+using RpgMaker.Api.Hubs;
 using RpgMaker.Api.Model;
 using RpgMaker.Api.Model.Enum;
 using RpgMaker.Api.Model.Response;
@@ -11,10 +13,12 @@ namespace RpgMaker.Api.Services
     public class PersonagemService
     {
         private readonly RpgMakerContext _context;
+        private readonly IHubContext<PersonagemHub> _hubContext;
 
-        public PersonagemService(RpgMakerContext context)
+        public PersonagemService(RpgMakerContext context, IHubContext<PersonagemHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
 
         internal async Task<bool> CriarPersonagem(int userId, PersonagemViewModel request)
@@ -43,6 +47,7 @@ namespace RpgMaker.Api.Services
                 _context.Personagem.Add(novoPersonagem);
 
                 await _context.SaveChangesAsync();
+                await _hubContext.Clients.All.SendAsync("PersonagemCriado", novoPersonagem);
 
                 return true;
             }
@@ -67,6 +72,7 @@ namespace RpgMaker.Api.Services
                 personagem.Level = request.Level;
 
                 await _context.SaveChangesAsync();
+                await _hubContext.Clients.All.SendAsync("PersonagemAtualizado", personagem);
 
                 return true;
             }
@@ -90,6 +96,7 @@ namespace RpgMaker.Api.Services
                 }
 
                 await _context.SaveChangesAsync();
+                await _hubContext.Clients.All.SendAsync("PXDistribuido");
                 return true;
 
             }
