@@ -30,6 +30,7 @@ export interface FichaData {
     Vigor: boolean[];
     Essencia: boolean[];
     LimiteSupressao: boolean[];
+    Defesa: boolean[];
   };
   Atributos: {
     Potencia: boolean[];
