@@ -18,10 +18,10 @@ var database = Environment.GetEnvironmentVariable("MYSQLDATABASE");
 var user = Environment.GetEnvironmentVariable("MYSQLUSER");
 var password = Environment.GetEnvironmentVariable("MYSQLPASSWORD");
 
-//var connectionString =
-//    $"Server={host};Port={portDb};Database={database};User={user};Password={password};SslMode=Required;";
+var connectionString =
+    $"Server={host};Port={portDb};Database={database};User={user};Password={password};SslMode=Required;";
 
-var connectionString = "Server=localhost;Database=rpgmaker;User=root;Password=ab12c3;";
+//var connectionString = "Server=localhost;Database=rpgmaker;User=root;Password=ab12c3;";
 
 builder.Services.AddDbContext<RpgMakerContext>(options =>
     options.UseMySql(
