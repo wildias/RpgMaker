@@ -21,6 +21,8 @@ var password = Environment.GetEnvironmentVariable("MYSQLPASSWORD");
 var connectionString =
     $"Server={host};Port={portDb};Database={database};User={user};Password={password};SslMode=Required;";
 
+//var connectionString = "Server=localhost;Database=rpgmaker;User=root;Password=ab12c3;";
+
 builder.Services.AddDbContext<RpgMakerContext>(options =>
     options.UseMySql(
         connectionString,
@@ -78,6 +80,17 @@ builder.Services.AddCors(options =>
     );
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowGitHubPages", policy =>
+    {
+        policy.WithOrigins("https://wildias.github.io")
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
+    });
+});
+
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
@@ -86,6 +99,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 var app = builder.Build();
 app.UseCors("AllowFrontend");
+app.UseCors("AllowGitHubPages");
 
 using (var scope = app.Services.CreateScope())
 {

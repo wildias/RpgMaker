@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/rpgmaker.frontend/',
+  base: '/RpgMaker/',
   build: {
     rollupOptions: {
       input: {

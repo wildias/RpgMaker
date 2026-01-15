@@ -166,12 +166,17 @@ export default function HomePage() {
       const userId = parseInt(claims.userId);
       
       if (modalMode === 'create') {
-        // Criar novo personagem
+        // Criar novo personagem (Player cria seu personagem, Mestre cria NPCs)
         await personagemService.criarPersonagem(userId, data);
         
-        // Recarregar o personagem após criar
-        const personagemData = await personagemService.buscarPersonagem(userId);
-        setPersonagem(personagemData);
+        // Recarregar dados
+        if (claims.role === 'Player') {
+          const personagemData = await personagemService.buscarPersonagem(userId);
+          setPersonagem(personagemData);
+        } else if (claims.role === 'Mestre') {
+          const personagensData = await personagemService.buscarPersonagens();
+          setPersonagens(personagensData);
+        }
         
         toast.success('Personagem criado com sucesso!');
         setIsModalOpen(false);
@@ -286,12 +291,20 @@ export default function HomePage() {
             {isMenuOpen && (
               <div className="dropdown-menu">
                 {claims?.role === 'Mestre' && (
-                  <button onClick={handleDistribuirPX} className="menu-item">
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="menu-item-icon">
-                      <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 18c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm-1-9h2v2h-2v-2zm0 4h2v2h-2v-2z"/>
-                    </svg>
-                    Distribuir PX
-                  </button>
+                  <>
+                    <button onClick={() => { setIsMenuOpen(false); handleCriarPersonagem(); }} className="menu-item">
+                      <svg viewBox="0 0 24 24" fill="currentColor" className="menu-item-icon">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
+                      </svg>
+                      Criar Personagem
+                    </button>
+                    <button onClick={handleDistribuirPX} className="menu-item">
+                      <svg viewBox="0 0 24 24" fill="currentColor" className="menu-item-icon">
+                        <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 18c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm-1-9h2v2h-2v-2zm0 4h2v2h-2v-2z"/>
+                      </svg>
+                      Distribuir PX
+                    </button>
+                  </>
                 )}
                 <button onClick={handleLogout} className="menu-item menu-item-logout">
                   <svg viewBox="0 0 24 24" fill="currentColor" className="menu-item-icon">
