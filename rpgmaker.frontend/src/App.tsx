@@ -8,7 +8,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/RpgMaker">
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route 
