@@ -1,9 +1,10 @@
-const CACHE_NAME = 'rpg-maker-v2';
+const CACHE_NAME = 'rpg-maker-v3';
+const BASE_PATH = '/RpgMaker';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/Logo192.png',
-  '/Logo512.png'
+  `${BASE_PATH}/`,
+  `${BASE_PATH}/index.html`,
+  `${BASE_PATH}/Logo192.png`,
+  `${BASE_PATH}/Logo512.png`
 ];
 
 // Instalação do Service Worker
