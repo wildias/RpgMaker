@@ -70,6 +70,7 @@ export const personagemService = {
           Vigor: formData.vigor,
           Essencia: formData.essencia,
           LimiteSupressao: formData.limiteSupressao,
+          Defesa: formData.defesa,
         },
         Atributos: {
           Potencia: formData.potencia,
@@ -136,6 +137,7 @@ export const personagemService = {
           Vigor: formData.vigor,
           Essencia: formData.essencia,
           LimiteSupressao: formData.limiteSupressao,
+          Defesa: formData.defesa,
         },
         Atributos: {
           Potencia: formData.potencia,

@@ -307,6 +307,11 @@
   border-color: #c62828;
 }
 
+.quadrado.defesa.preenchido {
+  background-color: #9c27b0;
+  border-color: #7b1fa2;
+}
+
 /* Hover específico por tipo */
 .quadrado.essencia:hover:not(.readonly) {
   border-color: #daa520;
@@ -314,6 +319,10 @@
 
 .quadrado.limite-supressao:hover:not(.readonly) {
   border-color: #c62828;
+}
+
+.quadrado.defesa:hover:not(.readonly) {
+  border-color: #7b1fa2;
 }
 
 .quadrado.readonly {

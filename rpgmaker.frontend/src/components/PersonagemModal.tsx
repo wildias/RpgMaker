@@ -36,9 +36,10 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
     nivel: 0,
     pxAtual: 0,
     pxTotal: 0,
-    vigor: Array(10).fill(false),
-    essencia: Array(10).fill(false),
-    limiteSupressao: Array(5).fill(false),
+    vigor: Array(18).fill(false),
+    essencia: Array(18).fill(false),
+    limiteSupressao: Array(9).fill(false),
+    defesa: Array(18).fill(false),
     potencia: Array(5).fill(false),
     agilidade: Array(5).fill(false),
     vontade: Array(5).fill(false),
@@ -74,9 +75,10 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
       // Parsear a ficha JSON se existir
       let fichaData: any = {
         EstadoVital: {
-          Vigor: Array(10).fill(false),
-          Essencia: Array(10).fill(false),
-          LimiteSupressao: Array(5).fill(false),
+          Vigor: Array(18).fill(false),
+          Essencia: Array(18).fill(false),
+          LimiteSupressao: Array(9).fill(false),
+          Defesa: Array(18).fill(false),
         },
         Atributos: {
           Potencia: Array(5).fill(false),
@@ -107,9 +109,10 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
         nivel: personagem.level || 0,
         pxAtual: personagem.pX_Atual || 0,
         pxTotal: personagem.pX_Total || 0,
-        vigor: fichaData.EstadoVital?.Vigor || Array(10).fill(false),
-        essencia: fichaData.EstadoVital?.Essencia || Array(10).fill(false),
-        limiteSupressao: fichaData.EstadoVital?.LimiteSupressao || Array(5).fill(false),
+        vigor: fichaData.EstadoVital?.Vigor || Array(18).fill(false),
+        essencia: fichaData.EstadoVital?.Essencia || Array(18).fill(false),
+        limiteSupressao: fichaData.EstadoVital?.LimiteSupressao || Array(9).fill(false),
+        defesa: fichaData.EstadoVital?.Defesa || Array(18).fill(false),
         potencia: fichaData.Atributos?.Potencia || Array(5).fill(false),
         agilidade: fichaData.Atributos?.Agilidade || Array(5).fill(false),
         vontade: fichaData.Atributos?.Vontade || Array(5).fill(false),
@@ -138,9 +141,10 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
         nivel: 0,
         pxAtual: 0,
         pxTotal: 0,
-        vigor: Array(10).fill(false),
-        essencia: Array(10).fill(false),
-        limiteSupressao: Array(5).fill(false),
+        vigor: Array(18).fill(false),
+        essencia: Array(18).fill(false),
+        limiteSupressao: Array(9).fill(false),
+        defesa: Array(18).fill(false),
         potencia: Array(5).fill(false),
         agilidade: Array(5).fill(false),
         vontade: Array(5).fill(false),
@@ -159,6 +163,39 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
       setHasChanges(false);
     }
   }, [personagem]);
+
+  // Calcular automaticamente Estado Vital baseado nos Atributos
+  useEffect(() => {
+    const potenciaCount = formData.potencia.filter(Boolean).length;
+    const agilidadeCount = formData.agilidade.filter(Boolean).length;
+    const vontadeCount = formData.vontade.filter(Boolean).length;
+    const engenhoCount = formData.engenho.filter(Boolean).length;
+
+    // Vigor = 10 + Potência
+    const vigorCalculado = 10 + potenciaCount;
+    // Essência = (Vontade x 2) + Engenho
+    const essenciaCalculada = (vontadeCount * 2) + engenhoCount;
+    // Limite de Supressão = 3 + Vontade
+    const limiteSupressaoCalculado = 3 + vontadeCount;
+    // Defesa = 5 + (Agilidade + Engenho)
+    const defesaCalculada = 5 + agilidadeCount + engenhoCount;
+
+    setFormData(prev => {
+      // Criar novos arrays com os valores calculados preenchidos
+      const novoVigor = Array(18).fill(false).map((_, i) => i < vigorCalculado);
+      const novaEssencia = Array(18).fill(false).map((_, i) => i < essenciaCalculada);
+      const novoLimiteSupressao = Array(9).fill(false).map((_, i) => i < limiteSupressaoCalculado);
+      const novaDefesa = Array(18).fill(false).map((_, i) => i < defesaCalculada);
+
+      return {
+        ...prev,
+        vigor: novoVigor,
+        essencia: novaEssencia,
+        limiteSupressao: novoLimiteSupressao,
+        defesa: novaDefesa
+      };
+    });
+  }, [formData.potencia, formData.agilidade, formData.vontade, formData.engenho]);
 
   // Detectar mudanças comparando formData com initialFormData
   useEffect(() => {
@@ -209,7 +246,7 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
     }
   };
 
-  const toggleEstadoVital = (tipo: 'vigor' | 'essencia' | 'limiteSupressao', index: number) => {
+  const toggleEstadoVital = (tipo: 'vigor' | 'essencia' | 'limiteSupressao' | 'defesa', index: number) => {
     if (isReadOnly) return;
     setFormData(prev => {
       const currentArray = prev[tipo];
@@ -425,7 +462,17 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
               <h3 className="estado-vital-title">Estado Vital</h3>
               
               <div className="estado-vital-item">
-                <label>Vigor:</label>
+                <label className="label-with-tooltip">
+                  Vigor:
+                  <span className="tooltip-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                    </svg>
+                    <div className="tooltip-content">
+                      <strong>Cálculo:</strong> 10 + Potência
+                    </div>
+                  </span>
+                </label>
                 <div className="quadrados-container">
                   {formData.vigor.map((preenchido: boolean, index: number) => (
                     <div
@@ -438,7 +485,17 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
               </div>
 
               <div className="estado-vital-item">
-                <label>Essência:</label>
+                <label className="label-with-tooltip">
+                  Essência:
+                  <span className="tooltip-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                    </svg>
+                    <div className="tooltip-content">
+                      <strong>Cálculo:</strong> (Vontade x 2) + Engenho
+                    </div>
+                  </span>
+                </label>
                 <div className="quadrados-container">
                   {formData.essencia.map((preenchido: boolean, index: number) => (
                     <div
@@ -458,6 +515,8 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
                       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
                     </svg>
                     <div className="tooltip-content">
+                      <strong>Cálculo:</strong> 3 + Vontade
+                      <br/><br/>
                       <strong>Efeitos por Nível:</strong>
                       <ul>
                         <li><strong>Nível 1-2:</strong> Desvantagem em testes de Percepção.</li>
@@ -473,6 +532,29 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
                       key={index}
                       className={`quadrado limite-supressao ${preenchido ? 'preenchido' : ''} ${isReadOnly ? 'readonly' : ''}`}
                       onClick={() => toggleEstadoVital('limiteSupressao', index)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className="estado-vital-item">
+                <label className="label-with-tooltip">
+                  Defesa:
+                  <span className="tooltip-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                    </svg>
+                    <div className="tooltip-content">
+                      <strong>Cálculo:</strong> 5 + (Agilidade + Engenho)
+                    </div>
+                  </span>
+                </label>
+                <div className="quadrados-container">
+                  {formData.defesa.map((preenchido: boolean, index: number) => (
+                    <div
+                      key={index}
+                      className={`quadrado defesa ${preenchido ? 'preenchido' : ''} ${isReadOnly ? 'readonly' : ''}`}
+                      onClick={() => toggleEstadoVital('defesa', index)}
                     />
                   ))}
                 </div>
