@@ -9,10 +9,23 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("RpgMakerDB");
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+builder.WebHost.UseUrls($"http://*:{port}");
+
+var host = Environment.GetEnvironmentVariable("MYSQLHOST");
+var portDb = Environment.GetEnvironmentVariable("MYSQLPORT");
+var database = Environment.GetEnvironmentVariable("MYSQLDATABASE");
+var user = Environment.GetEnvironmentVariable("MYSQLUSER");
+var password = Environment.GetEnvironmentVariable("MYSQLPASSWORD");
+
+var connectionString =
+    $"Server={host};Port={portDb};Database={database};User={user};Password={password};SslMode=Required;";
 
 builder.Services.AddDbContext<RpgMakerContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    options.UseMySql(
+        connectionString,
+        new MySqlServerVersion(new Version(8, 0, 36))
+    ));
 
 builder.Services.AddSignalR();
 builder.Services.AddHttpClient();
@@ -44,35 +57,32 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 // CORS
 const string CorsDevPolicy = "AllowFrontend";
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(CorsDevPolicy, policy =>
-        policy.WithOrigins("http://localhost:3000", "http://localhost:5173")
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials() // habilite apenas se usar cookies; NÃO combine com AllowAnyOrigin
-    );
-});
-
 //builder.Services.AddCors(options =>
 //{
-//    options.AddPolicy("AllowDevOrigins", policy =>
-//        policy
-//            .SetIsOriginAllowed(_ => true)
-//            .AllowAnyHeader()
-//            .AllowAnyMethod()
-//            .AllowCredentials()
+//    options.AddPolicy(CorsDevPolicy, policy =>
+//        policy.WithOrigins("http://localhost:3000", "http://localhost:5173")
+//              .AllowAnyHeader()
+//              .AllowAnyMethod()
+//              .AllowCredentials() // habilite apenas se usar cookies; NÃO combine com AllowAnyOrigin
 //    );
 //});
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowDevOrigins", policy =>
+        policy
+            .SetIsOriginAllowed(_ => true)
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()
+    );
+});
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
 });
-
-builder.WebHost.ConfigureKestrel(options => { options.ListenAnyIP(5000); });
 
 var app = builder.Build();
 app.UseCors("AllowFrontend");
@@ -82,6 +92,11 @@ using (var scope = app.Services.CreateScope())
     var dbContext = scope.ServiceProvider.GetRequiredService<RpgMakerContext>();
     dbContext.Database.Migrate();
 }
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
+});
 
 app.MapHub<PersonagemHub>("/personagemHub");
 

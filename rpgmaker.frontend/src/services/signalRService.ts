@@ -1,7 +1,7 @@
 import * as signalR from '@microsoft/signalr';
 import type { PersonagemResponse } from '../types/types';
 
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = 'https://rpgmaker-production.up.railway.app/';
 
 class SignalRService {
   private connection: signalR.HubConnection | null = null;
@@ -21,8 +21,8 @@ class SignalRService {
     }
 
     this.isConnecting = true;
-    console.log('SignalR: Iniciando conexão com o hub...');
-    console.log(`SignalR: URL do hub: ${API_BASE_URL}/personagemHub`);
+    //console.log('SignalR: Iniciando conexão com o hub...');
+    //console.log(`SignalR: URL do hub: ${API_BASE_URL}/personagemHub`);
 
     try {
       const token = localStorage.getItem('jwtToken');
