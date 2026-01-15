@@ -40,5 +40,25 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // Desregistrar todos os service workers antigos
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          for(let registration of registrations) {
+            registration.unregister().then(function(boolean) {
+              console.log('Service Worker desregistrado:', boolean);
+            });
+          }
+        });
+        
+        // Limpar todos os caches
+        caches.keys().then(function(names) {
+          for (let name of names) {
+            caches.delete(name);
+            console.log('Cache deletado:', name);
+          }
+        });
+      }
+    </script>
   </body>
 </html>
