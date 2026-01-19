@@ -35,28 +35,25 @@
       }(window.location))
     </script>
     <!-- End Single Page Apps for GitHub Pages -->
-    <script type="module" crossorigin src="/RpgMaker/assets/main-B2h3BK_v.js"></script>
-    <link rel="stylesheet" crossorigin href="/RpgMaker/assets/main-BEwkpW6G.css">
+    <script type="module" crossorigin src="/RpgMaker/assets/main-DaE__8LV.js"></script>
+    <link rel="stylesheet" crossorigin href="/RpgMaker/assets/main-B1j-xQ8N.css">
   </head>
   <body>
     <div id="root"></div>
     <script>
-      // Desregistrar todos os service workers antigos
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(function(registrations) {
-          for(let registration of registrations) {
-            registration.unregister().then(function(boolean) {
-              console.log('Service Worker desregistrado:', boolean);
+        window.addEventListener('load', () => {
+          const swPath = window.location.pathname.includes('/RpgMaker') 
+            ? '/RpgMaker/service-worker.js' 
+            : '/service-worker.js';
+          
+          navigator.serviceWorker.register(swPath)
+            .then(registration => {
+              console.log('Service Worker registrado com sucesso:', registration.scope);
+            })
+            .catch(error => {
+              console.log('Falha ao registrar Service Worker:', error);
             });
-          }
-        });
-        
-        // Limpar todos os caches
-        caches.keys().then(function(names) {
-          for (let name of names) {
-            caches.delete(name);
-            console.log('Cache deletado:', name);
-          }
         });
       }
     </script>
