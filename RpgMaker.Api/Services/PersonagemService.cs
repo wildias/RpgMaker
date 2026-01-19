@@ -70,6 +70,7 @@ namespace RpgMaker.Api.Services
                 personagem.Ficha = request.Ficha;
                 personagem.Imagem = request.Imagem != null ? ImagemUtil.ComprimirImagemBase64ParaBytes(request.Imagem) : personagem.Imagem;
                 personagem.Level = request.Level;
+                personagem.NumeroIdentificacao = request.NumeroIdentificacao;
 
                 await _context.SaveChangesAsync();
                 await _hubContext.Clients.All.SendAsync("PersonagemAtualizado", personagem);

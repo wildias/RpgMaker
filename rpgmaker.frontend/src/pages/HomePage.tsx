@@ -7,6 +7,7 @@ import type { PersonagemResponse, JWTClaims } from '../types/types';
 import PersonagemCard from '../components/PersonagemCard';
 import PersonagemModal from '../components/PersonagemModal';
 import DistribuirPXModal from '../components/DistribuirPXModal';
+import TrocarSenhaModal from '../components/TrocarSenhaModal';
 import { useSignalR } from '../hooks/useSignalR';
 import backgroundImage from '../assets/images/telaInicial.jpg';
 import '../styles/HomePage.css';
@@ -23,6 +24,7 @@ export default function HomePage() {
   const [selectedPersonagem, setSelectedPersonagem] = useState<PersonagemResponse | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isPXModalOpen, setIsPXModalOpen] = useState(false);
+  const [isTrocarSenhaModalOpen, setIsTrocarSenhaModalOpen] = useState(false);
 
   // Configurar SignalR para atualização em tempo real
   useSignalR({
@@ -234,6 +236,27 @@ export default function HomePage() {
     }
   };
 
+  const handleTrocarSenha = () => {
+    setIsMenuOpen(false);
+    setIsTrocarSenhaModalOpen(true);
+  };
+
+  const handleSubmitTrocarSenha = async (novaSenha: string) => {
+    try {
+      if (!claims?.userId) {
+        throw new Error('Usuário não identificado');
+      }
+
+      await authService.alterarSenha(parseInt(claims.userId), novaSenha);
+      toast.success('Senha alterada com sucesso!');
+      setIsTrocarSenhaModalOpen(false);
+    } catch (error) {
+      console.error('Erro ao trocar senha:', error);
+      toast.error('Erro ao alterar senha. Tente novamente.');
+      throw error;
+    }
+  };
+
   if (loading) {
     return (
       <div 
@@ -306,6 +329,12 @@ export default function HomePage() {
                     </button>
                   </>
                 )}
+                <button onClick={handleTrocarSenha} className="menu-item">
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="menu-item-icon">
+                    <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                  </svg>
+                  Trocar Senha
+                </button>
                 <button onClick={handleLogout} className="menu-item menu-item-logout">
                   <svg viewBox="0 0 24 24" fill="currentColor" className="menu-item-icon">
                     <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
@@ -380,6 +409,13 @@ export default function HomePage() {
         onClose={() => setIsPXModalOpen(false)}
         personagens={personagens}
         onDistribuir={handleSubmitDistribuirPX}
+      />
+
+      {/* Modal de Trocar Senha */}
+      <TrocarSenhaModal
+        isOpen={isTrocarSenhaModalOpen}
+        onClose={() => setIsTrocarSenhaModalOpen(false)}
+        onSubmit={handleSubmitTrocarSenha}
       />
 
         {/* Rodapé */}

@@ -6,7 +6,7 @@ namespace RpgMaker.Api.Model.Response
     {
         public int PersonagemId { get; set; }
         public string Nome { get; set; }
-        public long NumeroIdentificacao { get; set; }
+        public string NumeroIdentificacao { get; set; }
         public string Reino { get; set; }
         public string Aptidao { get; set; }
         public long PX_Atual { get; set; }

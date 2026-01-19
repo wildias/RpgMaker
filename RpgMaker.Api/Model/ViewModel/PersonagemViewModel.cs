@@ -5,7 +5,7 @@ namespace RpgMaker.Api.Model.ViewModel
     public class PersonagemViewModel
     {
         public string Nome { get; set; }
-        public long NumeroIdentificacao { get; set; }
+        public string NumeroIdentificacao { get; set; }
         public string Reino { get; set; }
         public string Aptidao { get; set; }
         public long PX_Atual { get; set; }

@@ -63,5 +63,25 @@ namespace RpgMaker.Api.Services
                 return null;
             }
         }
+
+        internal async Task<bool> AlterarSenha(int userId, AlterarSenhaViewModel senha)
+        {
+            try
+            {
+                var usuario = await _context.Usuario.FirstOrDefaultAsync(u => u.UsuarioId == userId);
+
+                if (usuario == null) return false;
+
+                usuario.Password = BCrypt.Net.BCrypt.HashPassword(senha.Password);
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
     }
 }

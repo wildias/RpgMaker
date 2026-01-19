@@ -55,6 +55,29 @@ export const authService = {
     if (!token) return null;
     return this.decodeToken(token);
   },
+
+  // Altera a senha do usuário
+  async alterarSenha(userId: number, novaSenha: string): Promise<void> {
+    try {
+      const token = this.getToken();
+      const response = await fetch(`${API_BASE_URL}/Auth/alterarsenha/${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ Password: novaSenha }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Erro ao alterar senha');
+      }
+    } catch (error) {
+      console.error('Erro ao alterar senha:', error);
+      throw error;
+    }
+  },
 };
 
 export interface UsuarioResponse {

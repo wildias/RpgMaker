@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService, AuthService, type UsuarioResponse } from '../services/authService';
-import backgroundImage from '../assets/images/background.jpg';
+import backgroundImage from '../assets/images/background.png';
 import '../styles/LoginPage.css';
 import temaSom from '../assets/sons/tema.mp3';
 

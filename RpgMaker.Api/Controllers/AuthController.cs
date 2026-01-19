@@ -67,6 +67,19 @@ namespace RpgMaker.Api.Controllers
             return Ok(usuarios);
         }
 
+        [HttpPut("alterarsenha/{userId}")]
+        public async Task<IActionResult> AlterarSenha(int userId, [FromBody] AlterarSenhaViewModel request)
+        {
+            var alterarSenha = await _usuarioService.AlterarSenha(userId, request);
+
+            if (alterarSenha)
+            {
+                return Ok("Senha alterada com sucesso");
+            }
+
+            return BadRequest("Erro ao alterar senha");
+        }
+
 
         public string GenerateJwtToken(Usuario user)
         {

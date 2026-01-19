@@ -50,7 +50,11 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
     manifestacaoMagica: '',
     historia: '',
     equipamento: '',
-    imagem: ''
+    imagem: '',
+    qualidades: '',
+    defeitos: '',
+    anotacoes: '',
+    pericias: ''
   });
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [showCropper, setShowCropper] = useState(false);
@@ -123,7 +127,11 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
         manifestacaoMagica: fichaData.ManifestacaoMagica || '',
         historia: fichaData.Historia || '',
         equipamento: fichaData.EquipamentosPosses || '',
-        imagem: personagem.imagem || ''
+        imagem: personagem.imagem || '',
+        qualidades: fichaData.Qualidades || '',
+        defeitos: fichaData.Defeitos || '',
+        anotacoes: fichaData.Anotacoes || '',
+        pericias: fichaData.Pericias || ''
       };
 
       setFormData(loadedData);
@@ -155,7 +163,11 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
         manifestacaoMagica: '',
         historia: '',
         equipamento: '',
-        imagem: ''
+        imagem: '',
+        qualidades: '',
+        defeitos: '',
+        anotacoes: '',
+        pericias: ''
       };
       setFormData(emptyData);
       setInitialFormData(null);
@@ -181,10 +193,10 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
     const defesaCalculada = 5 + agilidadeCount + engenhoCount;
 
     setFormData(prev => {
-      // Criar novos arrays com os valores calculados preenchidos
+      // Criar novos arrays: para Vigor, Essencia e Defesa preencher, para LimiteSupressao deixar vazio
       const novoVigor = Array(18).fill(false).map((_, i) => i < vigorCalculado);
       const novaEssencia = Array(18).fill(false).map((_, i) => i < essenciaCalculada);
-      const novoLimiteSupressao = Array(9).fill(false).map((_, i) => i < limiteSupressaoCalculado);
+      const novoLimiteSupressao = Array(limiteSupressaoCalculado).fill(false);
       const novaDefesa = Array(18).fill(false).map((_, i) => i < defesaCalculada);
 
       return {
@@ -711,6 +723,66 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
               </div>
             </div>
 
+            {/* Perícias */}
+            <div className="ficha-section">
+              <h3 className="section-header">Perícias</h3>
+              <div className="form-field">
+                <textarea
+                  name="pericias"
+                  value={formData.pericias}
+                  onChange={handleChange}
+                  readOnly={isReadOnly}
+                  placeholder="Liste as perícias do seu personagem..."
+                  rows={6}
+                />
+              </div>
+            </div>
+
+            {/* Qualidades */}
+            <div className="ficha-section">
+              <h3 className="section-header">Qualidades</h3>
+              <div className="form-field">
+                <textarea
+                  name="qualidades"
+                  value={formData.qualidades}
+                  onChange={handleChange}
+                  readOnly={isReadOnly}
+                  placeholder="Liste as qualidades do seu personagem..."
+                  rows={6}
+                />
+              </div>
+            </div>
+
+            {/* Defeitos */}
+            <div className="ficha-section">
+              <h3 className="section-header">Defeitos</h3>
+              <div className="form-field">
+                <textarea
+                  name="defeitos"
+                  value={formData.defeitos}
+                  onChange={handleChange}
+                  readOnly={isReadOnly}
+                  placeholder="Liste os defeitos do seu personagem..."
+                  rows={6}
+                />
+              </div>
+            </div>
+
+            {/* Anotações */}
+            <div className="ficha-section">
+              <h3 className="section-header">Anotações</h3>
+              <div className="form-field">
+                <textarea
+                  name="anotacoes"
+                  value={formData.anotacoes}
+                  onChange={handleChange}
+                  readOnly={isReadOnly}
+                  placeholder="Anotações do seu personagem..."
+                  rows={6}
+                />
+              </div>
+            </div>
+
             {/* História */}
             <div className="ficha-section">
               <h3 className="section-header">História do Personagem</h3>
@@ -955,6 +1027,19 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
                   ))}
                 </div>
               </div>
+
+              <div className="estado-vital-item">
+                <label>Defesa:</label>
+                <div className="quadrados-container">
+                  {formData.defesa.map((preenchido: boolean, index: number) => (
+                    <div
+                      key={index}
+                      className={`quadrado defesa ${preenchido ? 'preenchido' : ''} ${isReadOnly ? 'readonly' : ''}`}
+                      onClick={() => toggleEstadoVital('defesa', index)}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1106,6 +1191,66 @@ export default function PersonagemModal({ isOpen, onClose, personagem, mode, onS
                 onChange={handleChange}
                 readOnly={isReadOnly}
                 placeholder="Descreva a manifestação mágica do personagem..."
+                rows={6}
+              />
+            </div>
+          </div>
+
+          {/* Perícias */}
+          <div className="ficha-section">
+            <h3 className="section-header">Perícias</h3>
+            <div className="form-field">
+              <textarea
+                name="pericias"
+                value={formData.pericias}
+                onChange={handleChange}
+                readOnly={isReadOnly}
+                placeholder="Liste as perícias do seu personagem..."
+                rows={6}
+              />
+            </div>
+          </div>
+
+          {/* Qualidades */}
+          <div className="ficha-section">
+            <h3 className="section-header">Qualidades</h3>
+            <div className="form-field">
+              <textarea
+                name="qualidades"
+                value={formData.qualidades}
+                onChange={handleChange}
+                readOnly={isReadOnly}
+                placeholder="Liste as qualidades do seu personagem..."
+                rows={6}
+              />
+            </div>
+          </div>
+
+          {/* defeitos */}
+          <div className="ficha-section">
+            <h3 className="section-header">Defeitos</h3>
+            <div className="form-field">
+              <textarea
+                name="defeitos"
+                value={formData.defeitos}
+                onChange={handleChange}
+                readOnly={isReadOnly}
+                placeholder="Liste os defeitos do seu personagem..."
+                rows={6}
+              />
+            </div>
+          </div>
+
+          {/* Anotações */}
+          <div className="ficha-section">
+            <h3 className="section-header">Anotações</h3>
+            <div className="form-field">
+              <textarea
+                name="anotacoes"
+                value={formData.anotacoes}
+                onChange={handleChange}
+                readOnly={isReadOnly}
+                placeholder="Anotações do seu personagem..."
                 rows={6}
               />
             </div>

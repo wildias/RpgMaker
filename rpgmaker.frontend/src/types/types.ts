@@ -1,7 +1,7 @@
 export interface PersonagemResponse {
   personagemId: number;
   nome: string;
-  numeroIdentificacao: number;
+  numeroIdentificacao: string;
   reino: string;
   aptidao: string;
   pX_Atual: number;
@@ -14,7 +14,7 @@ export interface PersonagemResponse {
 
 export interface PersonagemCreateRequest {
   Nome: string;
-  NumeroIdentificacao: number;
+  NumeroIdentificacao: string;
   Reino: string;
   Aptidao: string;
   PX_Atual: number;
@@ -42,6 +42,10 @@ export interface FichaData {
   EquipamentosPosses: string;
   ManifestacaoMagica: string;
   Historia: string;
+  Pericias: string;
+  Qualidades: string;
+  Defeitos: string;
+  Anotacoes: string;
 }
 
 export interface JWTClaims {

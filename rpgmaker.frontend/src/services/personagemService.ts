@@ -82,12 +82,16 @@ export const personagemService = {
         EquipamentosPosses: formData.equipamento,
         ManifestacaoMagica: formData.manifestacaoMagica,
         Historia: formData.historia,
+        Pericias: formData.pericias || '',
+        Qualidades: formData.qualidades || '',
+        Defeitos: formData.defeitos || '',
+        Anotacoes: formData.anotacoes || '',
       };
 
       // Montar o payload de acordo com a API
       const payload: PersonagemCreateRequest = {
         Nome: formData.nome,
-        NumeroIdentificacao: parseInt(formData.numeroIdentificacao),
+        NumeroIdentificacao: formData.numeroIdentificacao,
         Reino: formData.reino,
         Aptidao: formData.aptidao,
         PX_Atual: formData.pxAtual,
@@ -149,12 +153,16 @@ export const personagemService = {
         EquipamentosPosses: formData.equipamento,
         ManifestacaoMagica: formData.manifestacaoMagica,
         Historia: formData.historia,
+        Pericias: formData.pericias || '',
+        Qualidades: formData.qualidades || '',
+        Defeitos: formData.defeitos || '',
+        Anotacoes: formData.anotacoes || '',
       };
 
       // Montar o payload de acordo com a API
       const payload: PersonagemCreateRequest = {
         Nome: formData.nome,
-        NumeroIdentificacao: parseInt(formData.numeroIdentificacao),
+        NumeroIdentificacao: formData.numeroIdentificacao,
         Reino: formData.reino,
         Aptidao: formData.aptidao,
         PX_Atual: formData.pxAtual,
